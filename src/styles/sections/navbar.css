@@ -1,0 +1,179 @@
+/* ==============================
+   NAVBAR
+============================== */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background: white;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+/* Shadow appears when scrolled */
+.navbar-scrolled {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Inner container */
+.navbar-inner {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0.5rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: padding 0.3s ease;
+}
+
+/* Shrink padding slightly on scroll */
+.navbar-scrolled .navbar-inner {
+  padding: 0.6rem 1.5rem;
+}
+
+/* Logo */
+
+.navbar-logo img {
+  height: 70px;
+  width: auto;
+  display: block;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar {
+  overflow: visible;
+}
+
+
+/* ==============================
+   Desktop Links
+============================== */
+
+.navbar-links a {
+  margin-left: 2rem;
+  text-decoration: none;
+  font-weight: 500;
+  color: var(--text-primary);
+  position: relative;
+  transition: 0.2s ease;
+}
+
+.navbar-links a:hover {
+  color: var(--blue-primary);
+}
+
+/* GREEN CTA */
+
+.nav-cta {
+  padding: 0.55rem 1.1rem;
+  background: var(--green-accent);
+  color: white !important;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.nav-cta:hover {
+  transform: translateY(-2px);
+}
+
+/* ==============================
+   MOBILE
+============================== */
+
+.mobile-toggle {
+  display: none;
+}
+
+.mobile-toggle button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Overlay */
+
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(3px);
+  z-index: 1100;
+}
+
+/* Slide Menu */
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  z-index: 1200;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+}
+
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+.mobile-links {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mobile-links a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+/* GREEN CTA (Mobile) */
+
+.mobile-cta {
+  margin-top: 2rem;
+  padding: 0.8rem;
+  text-align: center;
+  background: var(--green-accent);
+  color: white !important;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+@media (max-width: 1024px) {
+
+  .desktop {
+    display: none;
+  }
+
+  .mobile-toggle {
+    display: block;
+  }
+
+}
+
+@media (max-width: 768px) {
+  .navbar-logo img {
+    height: 60px;
+  }
+}
+

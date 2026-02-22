@@ -1,0 +1,41 @@
+/* ==============================
+   FINAL CTA SECTION
+============================== */
+
+.cta {
+  background-color: var(--blue-dark);
+  color: var(--text-light);
+  text-align: center;
+  padding: 5rem 1.5rem;
+}
+
+.cta h2 {
+  font-size: var(--heading-lg);
+  font-weight: 700;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta p {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: #CBD5E1;
+}
+
+.cta-button {
+  margin-top: 2.5rem;
+}
+
+.cta-button button {
+  background-color: var(--green-accent);
+  color: white;
+  padding: 1rem 2.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+}
+
+.cta-button button:hover {
+  opacity: 0.9;
+}

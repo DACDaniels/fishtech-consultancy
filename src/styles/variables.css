@@ -1,0 +1,57 @@
+:root {
+
+  /* ===========================
+     CORE BRAND COLORS
+  ============================ */
+
+  --bg-primary: #F8FAFC;           /* soft modern white */
+  --bg-light: #FFFFFF;
+  --bg-section: #F1F5F9;           /* light grey for alternating sections */
+
+  --blue-primary: #0E7490;         /* strong water blue */
+  --blue-dark: #0C4A6E;            /* footer / deep sections */
+  --blue-light: #E0F2FE;           /* soft accent */
+
+  --green-accent: #15803D;         /* subtle agriculture green */
+
+  --text-primary: #0F172A;         /* dark slate */
+  --text-secondary: #475569;
+  --text-light: #FFFFFF;
+
+  --border-light: #E2E8F0;
+
+  /* ===========================
+     TYPOGRAPHY
+  ============================ */
+
+  --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --heading-xl: 3rem;
+  --heading-lg: 2.2rem;
+  --heading-md: 1.6rem;
+
+  --text-base: 1rem;
+  --text-sm: 0.9rem;
+
+  /* ===========================
+     SPACING SYSTEM
+  ============================ */
+
+  --section-padding: 6rem 1.5rem;
+  --container-width: 1200px;
+
+  /* ===========================
+     SHADOWS
+  ============================ */
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+
+  /* ===========================
+     TRANSITIONS
+  ============================ */
+
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+
+}
