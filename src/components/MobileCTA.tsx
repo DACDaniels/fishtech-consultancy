@@ -1,7 +1,7 @@
 import "../styles/sections/mobile-cta.css"
 
 const MobileCTA = () => {
-  const whatsappNumber = "2637711626305"
+  const whatsappNumber = "263711626305"
 
   const handleClick = () => {
     const message = "Hello FishTech, I would like to request a quotation."
