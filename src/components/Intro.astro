@@ -1,0 +1,86 @@
+---
+// Opening animation, first visit of a session only. The FishTech mark draws
+// itself (outline, then water filling, then land), the name rises, and the
+// screen parts along the wave line to reveal the page. About 1.9 seconds.
+// Skipped for people who prefer reduced motion, and on later pages.
+// The inline script in Base.astro adds `intro` to <html> before first paint.
+---
+<div class="intro" aria-hidden="true" data-intro>
+  <svg class="halves" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="intro-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#031b20" /><stop offset=".5" stop-color="#05333c" /><stop offset="1" stop-color="#031b20" /></linearGradient>
+    </defs>
+    <path class="half top" fill="url(#intro-bg)" d="M0,0 H100 V48 C86,51 72,46 58,52 C42,58 24,45 0,53 Z" />
+    <path class="half bottom" fill="url(#intro-bg)" d="M0,52.4 C24,44.4 42,57.4 58,51.4 C72,45.4 86,50.4 100,47.4 V100 H0 Z" />
+    <path class="seam" d="M0,52.7 C24,44.7 42,57.7 58,51.7 C72,45.7 86,50.7 100,47.7" pathLength="1" />
+  </svg>
+  <div class="center">
+    <svg class="mark" viewBox="-4 -4 108 108">
+      <defs>
+        <clipPath id="intro-water"><rect class="fill-rise" x="-4" y="-4" width="108" height="108" /></clipPath>
+        <clipPath id="intro-land"><rect class="land-rise" x="-4" y="-4" width="108" height="108" /></clipPath>
+        <filter id="intro-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.4" /></filter>
+      </defs>
+      <path class="trace glow" d="M 26,0 L 100,0 L 100,44 C 86,48 68,44 56,52 C 38,64 22,42 0,54 L 0,26 A 26 26 0 0 1 26,0 Z" filter="url(#intro-glow)" />
+      <path class="trace" d="M 26,0 L 100,0 L 100,44 C 86,48 68,44 56,52 C 38,64 22,42 0,54 L 0,26 A 26 26 0 0 1 26,0 Z" />
+      <path class="trace t2" d="M 0,60 C 22,48 38,70 56,58 C 68,50 86,54 100,50 L 100,74 A 26 26 0 0 1 74,100 L 0,100 Z" />
+      <g clip-path="url(#intro-water)"><path class="water" d="M 26,0 L 100,0 L 100,44 C 86,48 68,44 56,52 C 38,64 22,42 0,54 L 0,26 A 26 26 0 0 1 26,0 Z" /></g>
+      <g clip-path="url(#intro-land)"><path class="land" d="M 0,60 C 22,48 38,70 56,58 C 68,50 86,54 100,50 L 100,74 A 26 26 0 0 1 74,100 L 0,100 Z" /></g>
+    </svg>
+    <div class="name"><span>FishTech</span></div>
+  </div>
+</div>
+
+<style>
+  .intro { display: none; }
+  :global(html.intro) .intro { display: block; position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+  :global(html.intro) body { overflow: hidden; }
+  .halves { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .seam { fill: none; stroke: #4fd1c5; stroke-width: 0.25; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+  .half { transform-box: view-box; }
+  .center { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 1.1rem; }
+  .mark { width: clamp(5rem, 14vw, 7.5rem); height: auto; overflow: visible; filter: drop-shadow(0 0 24px rgba(79, 209, 197, 0.35)); }
+  .trace { fill: none; stroke: #4fd1c5; stroke-width: 1.6; stroke-linejoin: round; stroke-dasharray: 420; stroke-dashoffset: 420; }
+  .trace.glow { stroke-width: 3; opacity: 0.8; }
+  .water { fill: #00707c; }
+  .land { fill: #2fa866; }
+  .fill-rise, .land-rise { transform-box: view-box; }
+  .fill-rise { transform: translateY(100%); }
+  .land-rise { transform: translateY(100%); }
+  .name { overflow: hidden; color: #ffffff; font-weight: 800; font-stretch: 80%; font-size: clamp(1.6rem, 4vw, 2.25rem); letter-spacing: -0.01em; line-height: 1.1; }
+  .name span { display: block; transform: translateY(110%); }
+
+  :global(html.intro) .trace { animation: draw 700ms cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+  :global(html.intro) .trace.t2 { animation-delay: 160ms; }
+  :global(html.intro) .fill-rise { animation: rise 620ms cubic-bezier(0.22, 1, 0.36, 1) 520ms forwards; }
+  :global(html.intro) .land-rise { animation: rise 520ms cubic-bezier(0.22, 1, 0.36, 1) 760ms forwards; }
+  :global(html.intro) .name span { animation: up 520ms cubic-bezier(0.22, 1, 0.36, 1) 900ms forwards; }
+  :global(html.intro) .seam { animation: seam 500ms cubic-bezier(0.65, 0, 0.35, 1) 1050ms forwards; }
+  :global(html.intro-out) .top { animation: lift 750ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
+  :global(html.intro-out) .bottom { animation: drop 750ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
+  :global(html.intro-out) .seam { opacity: 0 !important; transition: opacity 150ms; }
+  :global(html.intro-out) .center { animation: fade 300ms ease-out forwards; }
+
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes seam { 0% { opacity: 1; } 100% { opacity: 1; stroke-dashoffset: 0; } }
+  @keyframes rise { to { transform: translateY(0); } }
+  @keyframes up { to { transform: translateY(0); } }
+  @keyframes lift { to { transform: translateY(-101%); } }
+  @keyframes drop { to { transform: translateY(101%); } }
+  @keyframes fade { to { opacity: 0; transform: scale(0.96); } }
+</style>
+
+<script>
+  const root = document.documentElement;
+  if (root.classList.contains('intro')) {
+    const end = () => {
+      root.classList.remove('intro', 'intro-out');
+      root.classList.add('intro-done');
+      window.dispatchEvent(new Event('fishtech:intro-done'));
+    };
+    setTimeout(() => root.classList.add('intro-out'), 1400);
+    setTimeout(end, 2100);
+  } else {
+    root.classList.add('intro-done');
+  }
+</script>

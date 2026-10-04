@@ -18,14 +18,14 @@ import { PHONE } from '../lib/site';
         <span class="num phone">{PHONE}</span>
       </div>
     </div>
-    <figure class="phone-mock" aria-label="Example conversation with the FishTech assistant">
+    <figure class="phone-mock" data-reveal aria-label="Example conversation with the FishTech assistant">
       <div class="screen">
         <div class="bar"><img src="/brand/fishtech-profile.svg" alt="" width="36" height="36" /><div><strong>FishTech</strong><span>Example conversation</span></div></div>
         <div class="chat">
-          <p class="msg me">Hi, how much is a 10 by 10 pond with 300 micron liner? I'm near Bindura.</p>
-          <p class="msg them">Hi, thanks for contacting FishTech. A 10 × 10 m pond, 1.5 m deep, with 300 micron liner is <Price k="pond:10 x 10 m:300" />. Delivery and logistics to Bindura is <Price k="band:1" /> for the whole order.</p>
-          <p class="msg them">I'm sending your quotation as a PDF now. Would you like fingerlings and feed included?</p>
-          <p class="msg me">Yes please, fingerlings too.</p>
+          <p data-msg class="msg me">Hi, how much is a 10 by 10 pond with 300 micron liner? I'm near Bindura.</p>
+          <p data-msg class="msg them">Hi, thanks for contacting FishTech. A 10 × 10 m pond, 1.5 m deep, with 300 micron liner is <Price k="pond:10 x 10 m:300" />. Delivery and logistics to Bindura is <Price k="band:1" /> for the whole order.</p>
+          <p data-msg class="msg them">I'm sending your quotation as a PDF now. Would you like fingerlings and feed included?</p>
+          <p data-msg class="msg me">Yes please, fingerlings too.</p>
         </div>
       </div>
       <figcaption class="muted">An example of how a conversation goes. Prices are today's.</figcaption>
@@ -53,5 +53,12 @@ import { PHONE } from '../lib/site';
   .them { justify-self: start; background: var(--white); border-bottom-left-radius: 4px; }
   .them :global([data-price]) { font-weight: 750; color: var(--teal); }
   .phone-mock figcaption { text-align: center; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .phone-mock .msg { opacity: 0; transform: translateY(10px) scale(0.97); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
+    :global(html.js) .phone-mock.in .msg { opacity: 1; transform: none; }
+    :global(html.js) .phone-mock.in .msg:nth-child(2) { transition-delay: 700ms; }
+    :global(html.js) .phone-mock.in .msg:nth-child(3) { transition-delay: 1500ms; }
+    :global(html.js) .phone-mock.in .msg:nth-child(4) { transition-delay: 2300ms; }
+  }
   @media (max-width: 860px) { .a-grid { grid-template-columns: 1fr; } }
 </style>

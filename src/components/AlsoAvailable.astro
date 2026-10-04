@@ -5,9 +5,9 @@ import WaButton from './WaButton.astro';
 ---
 <section class="section also" id="also-available" aria-labelledby="also-title">
   <div class="wrap">
-    <div class="section-head"><h2 id="also-title">Also from FishTech</h2></div>
+    <div class="section-head" data-reveal><h2 id="also-title">Also from FishTech</h2></div>
     <div class="also-grid">
-      <article class="card feeder">
+      <article class="card feeder" data-reveal>
         <div class="img"><Picture src={render} formats={['avif', 'webp']} widths={[400, 700]} sizes="(max-width: 760px) 100vw, 30vw" alt="Illustration of the FishTech automatic fish feeder beside a pond" loading="lazy" /></div>
         <div class="body">
           <h3>Automatic fish feeder</h3>
@@ -15,7 +15,7 @@ import WaButton from './WaButton.astro';
           <WaButton tag="feeder" variant="line" label="Ask about the feeder" message="Hi FishTech, I'd like to know about the automatic fish feeder." />
         </div>
       </article>
-      <article class="card iris">
+      <article class="card iris" data-reveal style="--d:120ms">
         <div class="body">
           <p class="status">In development</p>
           <h3>Iris</h3>
