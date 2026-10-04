@@ -1,0 +1,12 @@
+{
+  "source": "blueacre-ops/docs/sales/customer-knowledge.md, 'Stocking and feeding (from Daniel, 2026-10-03)'",
+  "base_pond_m2": 100,
+  "fingerlings_per_base_pond": 1500,
+  "bags_per_base_pond": [
+    { "product": "Starter 2", "bags": 1 },
+    { "product": "Starter 3", "bags": 1 },
+    { "product": "Juvenile 1", "bags": 2 },
+    { "product": "Juvenile 2", "bags": 4 },
+    { "product": "Grower", "bags": 12 }
+  ]
+}

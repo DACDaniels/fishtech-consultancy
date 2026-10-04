@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CoverageMap from '../components/CoverageMap.astro';
+import DeliveryChecker from '../components/DeliveryChecker.astro';
+import WaButton from '../components/WaButton.astro';
+import { feed } from '../lib/site';
+import { bandFor, bandLabel, sortedBands, usd } from '../lib/pricing';
+
+const bands = sortedBands(feed);
+const groups = bands.map((b, i) => ({
+  band: b, i,
+  towns: feed.towns.filter((t) => bandFor(feed, t.km) === b).sort((a, z) => a.km - z.km),
+}));
+---
+<Base
+  title="Areas we cover | Fish pond construction across Zimbabwe | FishTech"
+  description={`FishTech builds fish ponds and delivers fingerlings and feed across the whole of Zimbabwe. Delivery and logistics is one charge per order, from ${usd(bands[0].price)} to ${usd(bands[bands.length - 1].price)}.`}
+>
+  <PageHero title="We work across the whole of Zimbabwe" crumb="Areas we cover">
+    <p class="lede">From Victoria Falls to Chipinge, and from Kariba to Beitbridge. Delivery and logistics is one charge for your whole order, however many trips the job takes, set by the road distance from Harare to your farm or its nearest town.</p>
+  </PageHero>
+
+  <section class="section top0">
+    <div class="wrap two">
+      <div class="stack">
+        <DeliveryChecker id="area-checker" />
+        <p class="muted">Not on our list? We still come to you. Tell our assistant your nearest town and it will work out the distance.</p>
+        <WaButton tag="areas" message="Hi FishTech, do you deliver to my area?" label="Ask about your area" />
+      </div>
+      <CoverageMap />
+    </div>
+  </section>
+
+  <section class="section white" aria-labelledby="towns-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="towns-title">Towns and their delivery charge</h2>
+        <p class="muted">Approximate road distances from Harare city centre.</p>
+      </div>
+      <div class="bands">
+        {groups.map((g) => (
+          <div class="band-col">
+            <h3><span class={`key b${g.i + 1}`}></span>{bandLabel(g.band)} <strong class="num" data-price={`band:${g.i}`}>{usd(g.band.price)}</strong></h3>
+            <ul>{g.towns.map((t) => <li><span>{t.place}</span><span class="num muted">{t.km} km</span></li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .top0 { padding-top: 0; }
+  .white { background: var(--white); }
+  .two { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 1rem + 4vw, 5rem); align-items: start; }
+  .two .stack { gap: 1.25rem; justify-items: start; }
+  .two :global(.checker) { width: 100%; }
+  .bands { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; }
+  .band-col h3 { font-size: var(--step-0); font-stretch: 100%; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--deep); }
+  .band-col h3 strong { margin-left: auto; color: var(--teal); }
+  .key { width: 0.85rem; height: 0.85rem; border-radius: 50%; display: inline-block; }
+  .b1 { background: var(--band-1); } .b2 { background: var(--band-2); } .b3 { background: var(--band-3); } .b4 { background: var(--band-4); }
+  .band-col ul { list-style: none; margin: 0; padding: 0; }
+  .band-col li { display: flex; justify-content: space-between; padding-block: 0.45rem; border-bottom: 1px solid var(--line); font-size: var(--step--1); }
+  @media (max-width: 960px) { .bands { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .bands { grid-template-columns: 1fr; } }
+</style>

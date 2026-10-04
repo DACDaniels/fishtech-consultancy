@@ -1,0 +1,76 @@
+---
+import '@fontsource-variable/archivo/wdth.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { feed, wa, HELLO, SITE } from '../lib/site';
+
+interface Props { title: string; description: string; image?: string; noFloat?: boolean; jsonLd?: Record<string, unknown>[] }
+const { title, description, image = '/og/fishtech.jpg', noFloat = false, jsonLd = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'), SITE).href;
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'FishTech',
+  description: 'Fish pond construction with HDPE liner, bird nets, tilapia fingerlings and fish feed across Zimbabwe.',
+  url: SITE,
+  telephone: `+${feed.whatsapp}`,
+  image: `${SITE}/og/fishtech.jpg`,
+  logo: `${SITE}/brand/icon-512.png`,
+  address: { '@type': 'PostalAddress', addressLocality: 'Harare', addressCountry: 'ZW' },
+  areaServed: { '@type': 'Country', name: 'Zimbabwe' },
+  currenciesAccepted: 'USD',
+};
+const snapshot = JSON.stringify(feed);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#063A43" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FishTech" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, SITE).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://ops.fishtech.co.zw" crossorigin />
+    <script type="application/ld+json" set:html={JSON.stringify([business, ...jsonLd])} />
+    <script defer src="/_vercel/insights/script.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    {!noFloat && (
+      <a class="btn btn-main float-wa" href={wa(HELLO, 'float')} data-wa-tag="float" data-float data-hidden>
+        <Icon name="chat" /><span>WhatsApp <span class="label-long">for a price</span></span>
+      </a>
+    )}
+    <script type="application/json" id="feed-snapshot" set:html={snapshot} />
+    <script>
+      import '../scripts/live-prices';
+      // Show the floating button once the first call to action has scrolled away.
+      const float = document.querySelector<HTMLElement>('[data-float]');
+      const first = document.querySelector('[data-first-cta]');
+      if (float) {
+        if (!first) float.removeAttribute('data-hidden');
+        else new IntersectionObserver(([e]) => float.toggleAttribute('data-hidden', e.isIntersecting)).observe(first);
+      }
+    </script>
+  </body>
+</html>

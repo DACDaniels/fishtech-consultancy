@@ -1,0 +1,11 @@
+---
+interface Props { title: string; crumb: string }
+const { title, crumb } = Astro.props;
+---
+<header class="page-hero">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">{crumb}</span></nav>
+    <h1>{title}</h1>
+    <slot />
+  </div>
+</header>

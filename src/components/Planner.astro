@@ -1,0 +1,77 @@
+---
+// Stocking and feed planner. Scales Daniel's 10 × 10 m figures by pond area.
+import { feed, plan, wa } from '../lib/site';
+import { pondSizes, stockingPlan, usd } from '../lib/pricing';
+import Icon from './Icon.astro';
+const sizes = pondSizes(feed);
+const sp = stockingPlan(feed, plan, sizes[0].area);
+---
+<div class="planner" data-planner data-plan={JSON.stringify(plan)}>
+  <fieldset>
+    <legend>Your pond</legend>
+    <div class="chips">
+      {sizes.map((s, i) => <label class="chip"><input type="radio" name="planner-size" value={s.key} checked={i === 0} /><span>{s.label}</span></label>)}
+    </div>
+  </fieldset>
+  <p class="headline"><strong class="num" data-fish>{sp.fingerlings.toLocaleString('en-US')}</strong> fingerlings, and about <strong class="num" data-kg>{sp.totalKg.toLocaleString('en-US')} kg</strong> of feed from start to harvest.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Feed</th><th scope="col">Bags</th><th scope="col">Bag size</th><th scope="col" class="price">Cost</th></tr></thead>
+      <tbody data-rows>
+        {sp.lines.map((l) => <tr><th scope="row">{l.product}</th><td class="num">{l.bags}</td><td class="num">{l.bag_kg} kg</td><td class="price">{usd(l.cost)}</td></tr>)}
+      </tbody>
+      <tfoot>
+        <tr><th scope="row">Fingerlings</th><td class="num" data-lots colspan="2">{sp.fingerlings.toLocaleString('en-US')}</td><td class="price" data-fcost>{usd(sp.fingerlingCost)}</td></tr>
+        <tr class="sum"><th scope="row">Fingerlings and feed</th><td colspan="2"></td><td class="price" data-sum>{usd(sp.fingerlingCost + sp.feedCost)}</td></tr>
+      </tfoot>
+    </table>
+  </div>
+  <p class="small muted">An estimate. The 10 × 10 m figures are ours; bigger ponds are scaled up by area. You buy each feed as your fish grow into it, not all at once. Delivery is added once per order.</p>
+  <a class="btn btn-main" data-planner-send href={wa(`Hi FishTech, I'd like fingerlings and feed for a ${sizes[0].label} pond.`, 'planner')} data-wa-tag="planner"><Icon name="chat" /><span>Order through our assistant</span></a>
+</div>
+<script>
+  import { currentFeed } from '../scripts/live-prices';
+  import { pondSizes, stockingPlan, usd, waLink, type FeedPlan } from '../lib/pricing';
+  document.querySelectorAll<HTMLElement>('[data-planner]').forEach((root) => {
+    const plan = JSON.parse(root.dataset.plan || '{}') as FeedPlan;
+    const run = () => {
+      const feed = currentFeed();
+      const key = root.querySelector<HTMLInputElement>('input[name="planner-size"]:checked')?.value;
+      const size = pondSizes(feed).find((s) => s.key === key);
+      if (!size) return;
+      const sp = stockingPlan(feed, plan, size.area);
+      root.querySelector('[data-fish]')!.textContent = sp.fingerlings.toLocaleString('en-US');
+      root.querySelector('[data-kg]')!.textContent = `${sp.totalKg.toLocaleString('en-US')} kg`;
+      root.querySelector('[data-lots]')!.textContent = sp.fingerlings.toLocaleString('en-US');
+      root.querySelector('[data-fcost]')!.textContent = usd(sp.fingerlingCost);
+      root.querySelector('[data-sum]')!.textContent = usd(sp.fingerlingCost + sp.feedCost);
+      root.querySelector('[data-rows]')!.replaceChildren(...sp.lines.map((l) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<th scope="row"></th><td class="num">${l.bags}</td><td class="num">${l.bag_kg} kg</td><td class="price">${usd(l.cost)}</td>`;
+        tr.querySelector('th')!.textContent = l.product;
+        return tr;
+      }));
+      root.querySelector<HTMLAnchorElement>('[data-planner-send]')!.href =
+        waLink(feed, `Hi FishTech, I'd like fingerlings and feed for a ${size.label} pond.`, 'planner');
+    };
+    root.addEventListener('change', run);
+    addEventListener('fishtech:prices', run);
+  });
+</script>
+<style>
+  .planner { display: grid; gap: 1.25rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(1.25rem, 1rem + 1.5vw, 2rem); margin-block: 1rem; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend { font-weight: 750; color: var(--deep); margin-bottom: 0.6rem; padding: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chip { position: relative; }
+  .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .chip span { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.5rem 0.95rem; border-radius: 10px; border: 1.5px solid var(--line); background: var(--mist); font-weight: 650; }
+  .chip input:checked + span { background: var(--teal); border-color: var(--teal); color: var(--white); }
+  .chip input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .headline { font-size: var(--step-1); }
+  .headline strong { color: var(--teal); }
+  tfoot th, tfoot td { border-top: 1px solid var(--line); border-bottom: 0; }
+  .sum th, .sum td { font-weight: 800; color: var(--deep); }
+  .sum td.price { color: var(--deep); }
+  .planner :global(.btn) { justify-self: start; }
+</style>

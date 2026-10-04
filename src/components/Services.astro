@@ -1,0 +1,65 @@
+---
+import Price from './Price.astro';
+import { feed } from '../lib/site';
+const per = feed.fingerlings.per.toLocaleString('en-US');
+---
+<section class="section" id="what-we-do" aria-labelledby="services-title">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="services-title">What we do</h2>
+      <p class="lede">The basics of fish farming, done properly. Every price here comes from our published price list, and delivery is one charge per order.</p>
+    </div>
+    <ul class="services" role="list">
+      <li>
+        <h3>Fish ponds, dug and lined</h3>
+        <p>We dig your pond to 1.5 m and fit HDPE plastic liner in 250, 300 or 400 micron. Standard sizes run from 10 × 10 m to 20 × 30 m, and we build other sizes on request.</p>
+        <p class="price-tag">from <Price k="pond-from" /></p>
+      </li>
+      <li>
+        <h3>Bird nets</h3>
+        <p>Birds eat small fish. We put a net over the pond so they can't reach them.</p>
+        <p class="price-tag">from <Price k="net-from" /></p>
+      </li>
+      <li>
+        <h3>Tilapia fingerlings</h3>
+        <p>Sold in lots of {per}, the right number for one 10 × 10 m pond, and delivered with your order.</p>
+        <p class="price-tag"><Price k="fingerlings" /> <span>per {per}</span></p>
+      </li>
+      <li>
+        <h3>Fish feed</h3>
+        <p>Starter, juvenile and grower feed by the bag. You buy each stage as your fish grow into it, so you never store feed for months.</p>
+        <p class="price-tag">from <Price k="feed-from" /> <span>a bag</span></p>
+      </li>
+      <li>
+        <h3>Site visits</h3>
+        <p>Before we build, we check your ground and water. If you go ahead, the visit fee comes off the price of the job.</p>
+        <p class="price-tag"><Price k="site-visit" /></p>
+      </li>
+      <li>
+        <h3>Thicker liners and pond balancing</h3>
+        <p>Liner up to 1 mm thick, and balancing work on existing ponds.</p>
+        <p class="price-tag ask">Ask for a price</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .services { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--deep); }
+  .services li {
+    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) minmax(8rem, 2fr); gap: 1rem 2.5rem;
+    align-items: baseline; padding-block: 1.6rem; border-bottom: 1px solid var(--line);
+  }
+  .services h3 { font-size: var(--step-3); font-stretch: 78%; font-weight: 800; }
+  .services p { color: var(--muted); max-width: 34em; }
+  .price-tag { text-align: right; color: var(--muted); font-size: var(--step--1); white-space: nowrap; }
+  .price-tag :global([data-price]) { display: inline-block; color: var(--teal); font-size: var(--step-3); font-weight: 800; font-stretch: 80%; margin-left: 0.25rem; }
+  .price-tag span:not([data-price]) { display: block; }
+  .price-tag.ask { color: var(--teal); font-weight: 700; font-size: var(--step-0); }
+  @media (max-width: 760px) {
+    .services li { grid-template-columns: 1fr auto; }
+    .services li p:not(.price-tag) { grid-column: 1 / -1; grid-row: 2; }
+    .price-tag { grid-column: 2; grid-row: 1; }
+    .price-tag :global([data-price]) { font-size: var(--step-2); }
+  }
+</style>

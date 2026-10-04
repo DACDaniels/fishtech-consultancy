@@ -1,0 +1,42 @@
+---
+import { PHONE, CHANNEL, wa, HELLO } from '../lib/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="grid">
+      <div class="stack">
+        <img src="/brand/fishtech-logo-white.svg" alt="FishTech, Aquaculture Services" width="383" height="90" style="height:3.2rem;width:auto" />
+        <p>Fish ponds, bird nets, tilapia fingerlings and feed, across Zimbabwe. Based in Harare.</p>
+      </div>
+      <div>
+        <h3>Get a price</h3>
+        <ul>
+          <li><a href={wa(HELLO, 'footer')} data-wa-tag="footer">WhatsApp {PHONE}</a></li>
+          <li>Our assistant answers any time</li>
+          <li><a href={CHANNEL} rel="noopener">Follow our WhatsApp channel</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Prices and guides</h3>
+        <ul>
+          <li><a href="/pond-prices">Pond prices</a></li>
+          <li><a href="/start-fish-farming-zimbabwe">Start fish farming</a></li>
+          <li><a href="/areas-we-cover">Areas we cover</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>FishTech</h3>
+        <ul>
+          <li><a href="/#our-work">Our work</a></li>
+          <li><a href="/#questions">Common questions</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="base">
+      <span>© {year} FishTech</span>
+      <span>Prices in US dollars, from our published price list.</span>
+    </div>
+  </div>
+</footer>

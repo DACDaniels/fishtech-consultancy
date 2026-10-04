@@ -1,0 +1,45 @@
+---
+import { feed } from '../lib/site';
+import Price from './Price.astro';
+interface Props { id?: string }
+const { id = 'checker' } = Astro.props;
+---
+<div class="checker" data-checker>
+  <label for={`${id}-input`}>Check delivery to your area</label>
+  <input id={`${id}-input`} type="text" list={`${id}-list`} autocomplete="off" placeholder="Type your nearest town" />
+  <datalist id={`${id}-list`}>{feed.towns.map((t) => <option value={t.place} />)}</datalist>
+  <p class="out" aria-live="polite" data-out>From <Price k="band:0" /> near Harare to <Price k="band:3" /> for the furthest towns. One charge per order.</p>
+</div>
+<script>
+  import { currentFeed } from '../scripts/live-prices';
+  import { bandFor, findTown, usd } from '../lib/pricing';
+  document.querySelectorAll<HTMLElement>('[data-checker]').forEach((root) => {
+    const input = root.querySelector('input')!;
+    const out = root.querySelector<HTMLElement>('[data-out]')!;
+    const initial = out.innerHTML;
+    const run = () => {
+      const feed = currentFeed();
+      const q = input.value.trim();
+      if (!q) { out.innerHTML = initial; return; }
+      const t = findTown(feed, q);
+      if (t) {
+        const b = bandFor(feed, t.km);
+        out.textContent = t.km === 0
+          ? `${t.place}: delivery and logistics is ${usd(b.price)} per order.`
+          : `${t.place} is about ${t.km} km from Harare by road. Delivery and logistics: ${usd(b.price)} per order.`;
+      } else if (q.length > 2) {
+        out.textContent = `${q} isn't on our list yet. We still deliver there: tell our assistant your nearest town and it will work out the distance.`;
+      }
+    };
+    input.addEventListener('input', run);
+    addEventListener('fishtech:prices', run);
+  });
+</script>
+<style>
+  .checker { display: grid; gap: 0.5rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; }
+  label { font-weight: 750; color: var(--deep); }
+  input { font: inherit; padding: 0.8rem 0.9rem; border-radius: 10px; border: 1.5px solid var(--line); min-height: 3rem; background: var(--mist); color: var(--ink); }
+  input:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--tint); }
+  .out { color: var(--ink); }
+  .out :global([data-price]) { color: var(--teal); font-weight: 750; }
+</style>

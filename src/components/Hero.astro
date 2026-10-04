@@ -1,0 +1,113 @@
+---
+import { getImage } from 'astro:assets';
+import Price from './Price.astro';
+import WaButton from './WaButton.astro';
+import Icon from './Icon.astro';
+import poster from '../assets/photos/hero-poster.jpg';
+const posterWebp = await getImage({ src: poster, format: 'webp', width: 720, quality: 72 });
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-text">
+    <div class="hero-inner">
+      <h1 id="hero-title">
+        <span class="line"><span>Fish ponds,</span></span>
+        <span class="line"><span>built properly,</span></span>
+        <span class="line"><span>anywhere in</span></span>
+        <span class="line"><span>Zimbabwe</span></span>
+      </h1>
+      <p class="hero-lede">We dig and line fish ponds, put up bird nets, and supply tilapia fingerlings and feed. Ask our assistant on WhatsApp for a price, any time of day or night.</p>
+      <div class="btn-row" data-first-cta>
+        <WaButton tag="hero" message="Hi FishTech, I'd like a price for a fish pond." />
+        <a class="btn btn-line" href="#prices">See pond prices</a>
+      </div>
+      <p class="hero-facts">Lined ponds from <Price k="pond-from" />. Delivery anywhere in Zimbabwe, one charge per order.</p>
+    </div>
+  </div>
+  <div class="hero-media">
+    <video data-hero-video muted loop playsinline preload="none" poster={posterWebp.src} aria-label="Video: newly lined fish ponds filled with water, Douglasdale, Bulawayo" data-src="/video/hero-douglasdale.mp4"></video>
+    <span class="waterline" aria-hidden="true"></span>
+    <p class="hero-place"><Icon name="pin" /> Douglasdale, Bulawayo</p>
+    <button class="hero-pause" type="button" data-hero-pause hidden aria-label="Pause video">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor" /><path class="i-play" d="M8 5.5v13l10.5-6.5Z" fill="currentColor" /></svg>
+    </button>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    min-height: min(calc(100svh - var(--header-h)), 54rem); background: var(--deep); color: var(--white);
+    position: relative; overflow: hidden;
+  }
+  .hero-text { display: flex; align-items: flex-end; padding: clamp(2.5rem, 2rem + 4vw, 6rem) var(--gutter); }
+  .hero-inner { width: 100%; max-width: 44rem; margin-left: max(0px, calc((100vw - var(--max)) / 2)); display: grid; gap: 1.6rem; }
+  h1 { color: var(--white); font-size: var(--display); font-weight: 800; font-stretch: 70%; line-height: 0.95; letter-spacing: -0.015em; }
+  .line { display: block; overflow: hidden; padding-bottom: 0.04em; }
+  .line > span { display: block; }
+  .hero-lede { font-size: var(--step-1); line-height: 1.5; max-width: 32em; color: var(--on-deep-muted); }
+  .hero-facts { font-size: var(--step--1); color: var(--on-deep-muted); }
+  .hero-facts :global([data-price]) { color: var(--gold); font-weight: 750; }
+  .hero :global(.btn-line) { color: var(--white); }
+  .hero :global(.btn-line:hover) { background: var(--deep-2); }
+
+  .hero-media { position: relative; background: var(--deep-2); }
+  .hero-media video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .hero-place {
+    position: absolute; left: 1rem; bottom: 1rem; display: inline-flex; gap: 0.35rem; align-items: center;
+    background: rgba(6, 58, 67, 0.72); color: var(--white); font-size: var(--step--1); font-weight: 600;
+    padding: 0.35rem 0.75rem 0.35rem 0.55rem; border-radius: 999px; backdrop-filter: blur(6px);
+  }
+  .hero-place :global(svg) { width: 1rem; height: 1rem; }
+  .hero-pause {
+    position: absolute; right: 1rem; bottom: 1rem; width: 2.5rem; height: 2.5rem; border-radius: 50%; border: 0;
+    background: rgba(6, 58, 67, 0.72); color: var(--white); display: grid; place-items: center; cursor: pointer;
+  }
+  .hero-pause svg { width: 1.1rem; height: 1.1rem; }
+  .hero-pause .i-play { display: none; }
+  .hero-pause[data-paused] .i-play { display: block; }
+  .hero-pause[data-paused] .i-pause { display: none; }
+  .waterline { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--green); opacity: 0; pointer-events: none; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-media video { animation: fill 1100ms var(--ease-out) 120ms both; }
+    .waterline { animation: rise 1100ms var(--ease-out) 120ms both; }
+    .line > span { animation: up 700ms var(--ease-out) both; }
+    .line:nth-child(1) > span { animation-delay: 380ms; }
+    .line:nth-child(2) > span { animation-delay: 450ms; }
+    .line:nth-child(3) > span { animation-delay: 520ms; }
+    .line:nth-child(4) > span { animation-delay: 590ms; }
+    @keyframes fill { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+    @keyframes rise { 0% { transform: translateY(var(--h, 60rem)); opacity: 1; } 85% { opacity: 1; } 100% { transform: translateY(0); opacity: 0; } }
+    @keyframes up { from { transform: translateY(105%); } to { transform: none; } }
+  }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-media { grid-row: 1; aspect-ratio: 5 / 4; max-height: 46svh; width: 100%; }
+    .hero-text { padding-top: 1.75rem; padding-bottom: 3rem; }
+    .hero-inner { gap: 1.25rem; }
+    .hero-lede { font-size: var(--step-0); }
+    .hero-inner { margin-left: 0; }
+    .waterline { --h: 40rem; }
+  }
+</style>
+
+<script>
+  const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+  const pause = document.querySelector<HTMLButtonElement>('[data-hero-pause]');
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  const slow = !!conn && (conn.saveData || ['slow-2g', '2g', '3g'].includes(conn.effectiveType || ''));
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (video && !slow && !still) {
+    const start = () => {
+      video.src = video.dataset.src || '';
+      video.play().then(() => { if (pause) pause.hidden = false; }).catch(() => {});
+    };
+    if (document.readyState === 'complete') setTimeout(start, 300);
+    else addEventListener('load', () => setTimeout(start, 300), { once: true });
+    pause?.addEventListener('click', () => {
+      if (video.paused) { video.play(); pause.removeAttribute('data-paused'); pause.setAttribute('aria-label', 'Pause video'); }
+      else { video.pause(); pause.setAttribute('data-paused', ''); pause.setAttribute('aria-label', 'Play video'); }
+    });
+  }
+</script>

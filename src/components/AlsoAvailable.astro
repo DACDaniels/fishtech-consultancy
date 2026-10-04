@@ -1,0 +1,47 @@
+---
+import { Picture } from 'astro:assets';
+import render from '../assets/photos/feeder-render.png';
+import WaButton from './WaButton.astro';
+---
+<section class="section also" id="also-available" aria-labelledby="also-title">
+  <div class="wrap">
+    <div class="section-head"><h2 id="also-title">Also from FishTech</h2></div>
+    <div class="also-grid">
+      <article class="card feeder">
+        <div class="img"><Picture src={render} formats={['avif', 'webp']} widths={[400, 700]} sizes="(max-width: 760px) 100vw, 30vw" alt="Illustration of the FishTech automatic fish feeder beside a pond" loading="lazy" /></div>
+        <div class="body">
+          <h3>Automatic fish feeder</h3>
+          <p>Made to order. Tell our assistant about your pond, and we'll talk you through it and give you a price.</p>
+          <WaButton tag="feeder" variant="line" label="Ask about the feeder" message="Hi FishTech, I'd like to know about the automatic fish feeder." />
+        </div>
+      </article>
+      <article class="card iris">
+        <div class="body">
+          <p class="status">In development</p>
+          <h3>Iris</h3>
+          <p>A digital tool for fish farmers that we're developing. It isn't for sale yet. Register your interest and we'll tell you when it is.</p>
+          <WaButton tag="iris" variant="line" label="Register interest" message="Hi FishTech, please let me know when Iris is available." />
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+<style>
+  .also { background: var(--white); }
+  .also-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 1.5rem; }
+  .card { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--mist); display: grid; }
+  .feeder { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .feeder .img { background: var(--tint); }
+  .feeder .img :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .body { padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem); display: grid; gap: 1rem; align-content: start; }
+  .body p { color: var(--muted); }
+  .iris { background: var(--deep); border-color: var(--deep); }
+  .iris h3 { color: var(--white); font-size: var(--step-5); font-weight: 800; font-stretch: 72%; }
+  .iris p { color: var(--on-deep-muted); }
+  .iris :global(.btn-line) { color: var(--white); }
+  .iris :global(.btn-line:hover) { background: var(--deep-2); }
+  .status { justify-self: start; font-size: var(--step--1); font-weight: 700; color: var(--white) !important; box-shadow: inset 0 0 0 1.5px var(--on-deep-muted); padding: 0.2rem 0.75rem; border-radius: 999px; }
+  .body :global(.btn) { justify-self: start; }
+  @media (max-width: 960px) { .also-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { .feeder { grid-template-columns: 1fr; } .feeder .img { aspect-ratio: 4 / 3; } }
+</style>

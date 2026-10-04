@@ -1,0 +1,167 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Price from '../components/Price.astro';
+import Calculator from '../components/Calculator.astro';
+import WaButton from '../components/WaButton.astro';
+import Faq from '../components/Faq.astro';
+import { Picture } from 'astro:assets';
+import finished from '../assets/photos/pond-finished-2.jpg';
+import { feed } from '../lib/site';
+import { bandLabel, microns, pondFrom, pondSizes, sortedBands, usd } from '../lib/pricing';
+import { faqs, faqJsonLd } from '../lib/faq';
+
+const sizes = pondSizes(feed);
+const ms = microns(feed);
+const grade: Record<number, string> = { 250: 'Standard', 300: 'Stronger', 400: 'Heavy duty' };
+const bands = sortedBands(feed);
+const per = feed.fingerlings.per.toLocaleString('en-US');
+const items = faqs(feed).filter((q) => ['How do I pay?', 'What does a site visit cost?', 'Can you build other sizes, or deeper ponds?', 'Do you work outside Harare?'].includes(q.q));
+---
+<Base
+  title={`Fish pond prices in Zimbabwe | Lined ponds from ${usd(pondFrom(feed))} | FishTech`}
+  description={`Prices for every standard fish pond size and liner, bird nets, tilapia fingerlings, fish feed and delivery across Zimbabwe. Lined ponds from ${usd(pondFrom(feed))}.`}
+  jsonLd={[faqJsonLd(items)]}
+>
+  <PageHero title="Fish pond prices in Zimbabwe" crumb="Pond prices">
+    <p class="lede">Every standard pond size and liner, with bird nets, fingerlings, feed and delivery. These are the prices our assistant quotes from, in US dollars.</p>
+    <div class="btn-row" style="margin-top:1.75rem" data-first-cta>
+      <WaButton tag="prices-page" message="Hi FishTech, I'd like a price for a fish pond." />
+      <a class="btn btn-line" href="#calculator">Price your pond</a>
+    </div>
+  </PageHero>
+
+  <section class="section tight" aria-labelledby="ponds-title">
+    <div class="wrap two">
+      <div class="stack">
+        <h2 id="ponds-title">Ponds, dug and lined</h2>
+        <p class="muted">Dug to 1.5 m deep in fresh ground, with HDPE plastic liner fitted. Choose the liner thickness: thicker liner is stronger and lasts longer.</p>
+        <div class="table-wrap">
+          <table>
+            <caption class="visually-hidden">Pond prices by size and liner thickness</caption>
+            <thead>
+              <tr><th scope="col">Pond size</th>{ms.map((m) => <th scope="col" class="price">{m} micron<br /><span class="grade">{grade[m] ?? ''}</span></th>)}</tr>
+            </thead>
+            <tbody>
+              {sizes.map((s) => (
+                <tr><th scope="row">{s.label}</th>{ms.map((m) => <td class="price"><Price k={`pond:${s.key}:${m}`} /></td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted">Other sizes on request. Liner up to 1 mm thick and pond balancing: ask for a price.</p>
+      </div>
+      <figure>
+        <div class="photo tall"><Picture src={finished} formats={['avif', 'webp']} widths={[480, 800, 1100]} sizes="(max-width: 860px) 100vw, 40vw" alt="A finished lined pond full of water under a blue sky" /></div>
+        <figcaption>A finished pond, October 2025.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section tight white" aria-labelledby="included-title">
+    <div class="wrap">
+      <h2 id="included-title" class="h3like">What the pond price includes</h2>
+      <div class="lists">
+        <div>
+          <h3>Included</h3>
+          <ul>
+            <li>Digging the pond to 1.5 m deep</li>
+            <li>HDPE liner in the thickness you choose</li>
+            <li>Laying and fitting the liner</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Priced separately</h3>
+          <ul>
+            <li>Delivery and logistics, once per order</li>
+            <li>Bird net</li>
+            <li>Fingerlings and feed</li>
+            <li>The site visit, which comes off the job if you go ahead</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Paying</h3>
+          <ul>
+            <li>Half before we start</li>
+            <li>Half when the pond is finished</li>
+            <li>Quotations hold for 30 days</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight" aria-labelledby="extras-title">
+    <div class="wrap">
+      <h2 id="extras-title" class="visually-hidden">Bird nets, fingerlings, feed and delivery</h2>
+      <div class="grid4">
+        <div class="stack">
+          <h3>Bird nets</h3>
+          <p class="muted">Supplied and put up over the pond.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Pond size</th><th scope="col" class="price">Price</th></tr></thead>
+              <tbody>{feed.bird_nets.map((n) => <tr><th scope="row">{n.size.replace(/\s*x\s*/i, ' × ')}</th><td class="price"><Price k={`net:${n.size}`} /></td></tr>)}</tbody>
+            </table>
+          </div>
+        </div>
+        <div class="stack">
+          <h3>Fish feed</h3>
+          <p class="muted">By the bag. Starter comes in 10 kg bags, the rest in 25 kg bags.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Feed</th><th scope="col">Bag</th><th scope="col" class="price">Price</th></tr></thead>
+              <tbody>{feed.feed.map((f) => <tr><th scope="row">{f.product}</th><td class="num">{f.bag_kg} kg</td><td class="price"><Price k={`feed:${f.product}`} /></td></tr>)}</tbody>
+            </table>
+          </div>
+          <p class="small"><a href="/start-fish-farming-zimbabwe#feeding">Which feed, and when</a></p>
+        </div>
+        <div class="stack">
+          <h3>Delivery and logistics</h3>
+          <p class="muted">One charge per order, however many trips, by road distance from Harare to your farm or its nearest town.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Distance</th><th scope="col" class="price">Per order</th></tr></thead>
+              <tbody>{bands.map((b, i) => <tr><th scope="row">{bandLabel(b)}</th><td class="price"><Price k={`band:${i}`} /></td></tr>)}</tbody>
+            </table>
+          </div>
+          <p class="small"><a href="/areas-we-cover">Find your town</a></p>
+        </div>
+        <div class="stack">
+          <h3>Fingerlings and site visits</h3>
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr><th scope="row">Tilapia fingerlings, per {per}</th><td class="price"><Price k="fingerlings" /></td></tr>
+                <tr><th scope="row">Site visit</th><td class="price"><Price k="site-visit" /></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted">{per} fingerlings stock one 10 × 10 m pond. The site visit comes off the job if you go ahead.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Calculator id="calculator" tag="prices-calculator" />
+  <Faq items={items} title="Questions about prices" id="price-questions" />
+</Base>
+
+<style>
+  .tight { padding-block: clamp(3rem, 2rem + 3vw, 5rem); }
+  .white { background: var(--white); }
+  .two { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(2rem, 1rem + 4vw, 5rem); align-items: start; }
+  .two .stack { gap: 1.25rem; }
+  .two h2 { font-size: var(--step-4); }
+  .grade { font-weight: 500; color: var(--muted); }
+  .tall { aspect-ratio: 3 / 4; }
+  .h3like { font-size: var(--step-4); margin-bottom: 2rem; }
+  .lists { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+  .lists h3 { font-size: var(--step-1); margin-bottom: 0.75rem; }
+  .lists ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; }
+  .grid4 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 2rem; }
+  .grid4 .stack { gap: 0.9rem; align-content: start; }
+  @media (max-width: 860px) {
+    .two, .lists, .grid4 { grid-template-columns: 1fr; }
+  }
+</style>
