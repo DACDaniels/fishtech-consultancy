@@ -33,12 +33,27 @@ const snapshot = JSON.stringify(feed);
       (function () {
         var d = document.documentElement;
         d.classList.add('js');
+        // Palette comparison for the preview: ?palette=a or ?palette=b, remembered for the visit.
+        try {
+          var q = new URLSearchParams(location.search).get('palette');
+          if (q === 'a' || q === 'b') sessionStorage.setItem('ft-palette', q);
+          var pal = sessionStorage.getItem('ft-palette');
+          if (pal === 'b') d.setAttribute('data-palette', 'b');
+        } catch (e) {}
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          d.classList.add('motion');
+          setTimeout(function () { if (!window.__motionReady) d.classList.remove('motion'); }, 4000);
+        }
         try {
           var quiet = matchMedia('(prefers-reduced-motion: reduce)').matches || /bot|crawl|spider|lighthouse|headless/i.test(navigator.userAgent);
           if (!quiet && !sessionStorage.getItem('ft-intro')) {
             d.classList.add('intro');
             sessionStorage.setItem('ft-intro', '1');
-            setTimeout(function () { d.classList.remove('intro', 'intro-out'); d.classList.add('intro-done'); }, 3200);
+            setTimeout(function () {
+              if (!d.classList.contains('intro')) return;
+              d.classList.remove('intro'); d.classList.add('intro-done', 'hero-ready');
+              window.dispatchEvent(new Event('fishtech:intro-done'));
+            }, 4500);
           }
         } catch (e) {}
       })();
@@ -80,11 +95,7 @@ const snapshot = JSON.stringify(feed);
     <script type="application/json" id="feed-snapshot" set:html={snapshot} />
     <script>
       import '../scripts/live-prices';
-      // Scroll reveals: add .in when an element comes into view.
-      const io = new IntersectionObserver((entries) => {
-        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
-      document.querySelectorAll('[data-reveal], [data-reveal-map]').forEach((el) => io.observe(el));
+      import '../scripts/motion';
       // Show the floating button once the first call to action has scrolled away.
       const float = document.querySelector<HTMLElement>('[data-float]');
       const first = document.querySelector('[data-first-cta]');

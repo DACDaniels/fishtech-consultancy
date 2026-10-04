@@ -3,9 +3,9 @@
 // refreshes it from the live feed (src/scripts/live-prices.ts).
 import { resolvePrice, usd } from '../lib/pricing';
 import { feed } from '../lib/site';
-interface Props { k: string }
-const { k } = Astro.props;
+interface Props { k: string; count?: boolean }
+const { k, count = false } = Astro.props;
 const v = resolvePrice(feed, k);
 if (v === undefined) throw new Error(`No price in the feed for "${k}"`);
 ---
-<span class="num" data-price={k}>{usd(v)}</span>
+<span class="num" data-price={k} data-motion={count ? 'count' : undefined}>{usd(v)}</span>

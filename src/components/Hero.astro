@@ -1,108 +1,77 @@
 ---
-// Home hero. No photo: a dark water scene with a dotted grid, soft glows, rain-like
-// ripples on a canvas, the FishTech mark as giant line art, and an isometric line
-// drawing of a lined 20 × 20 m pond that builds itself, with live-price chips.
-import Price from './Price.astro';
+// Home hero. Under water, looking down into a pond:
+// - caustics: the moving net of light that sunlight throws on a pond floor (WebGL shader, ours)
+// - a school of fingerlings that swims as a group (boids flocking) and scatters from the pointer
+// - light shafts from the surface
+// - a split-flap price board fed by the live price list
+// - a depth gauge that sinks as you scroll (desktop)
 import WaButton from './WaButton.astro';
 import { feed } from '../lib/site';
-import { microns, pondSizes } from '../lib/pricing';
+import { bandLabel, resolvePrice, sizeLabel, sortedBands, usd } from '../lib/pricing';
 
-// Isometric projection of a pond, in metres. x runs right-down, y left-down, z up.
-const S = 11.2, CX = 280, CY = 70, DEPTH = 4.2; // depth exaggerated ×2.8 so the walls read
-const P = (x: number, y: number, z = 0) => [CX + (x - y) * S * 0.866, CY + (x + y) * S * 0.5 - z * S];
-const pt = (p: number[]) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`;
-const L = 20;
-const rim = [P(0, 0), P(L, 0), P(L, L), P(0, L)];
-const floor = [P(0, 0, -DEPTH), P(L, 0, -DEPTH), P(L, L, -DEPTH), P(0, L, -DEPTH)];
-const W = 1.3; // water sits below the rim
-const water = [P(0.6, 0.6, -W), P(L - 0.6, 0.6, -W), P(L - 0.6, L - 0.6, -W), P(0.6, L - 0.6, -W)];
-// Plan-to-screen matrix for the water surface, used to draw ripples as true isometric circles.
-const wz = P(0, 0, -W);
-const m = `matrix(${(S * 0.866).toFixed(3)} ${(S * 0.5).toFixed(3)} ${(-S * 0.866).toFixed(3)} ${(S * 0.5).toFixed(3)} ${wz[0].toFixed(2)} ${wz[1].toFixed(2)})`;
-const groundLines = Array.from({ length: 9 }, (_, i) => -8 + i * 4.5);
-const nSizes = pondSizes(feed).length;
-const nMicrons = microns(feed).length;
-const nTowns = feed.towns.length;
+type Item = { label: string; key: string };
+const rows: Item[][] = [
+  [
+    { label: '10 × 10 m pond, 250 micron', key: 'pond:10 x 10 m:250' },
+    { label: '10 × 20 m pond, 300 micron', key: 'pond:10 x 20 m:300' },
+    { label: '20 × 20 m pond, 300 micron', key: 'pond:20 x 20 m:300' },
+    { label: '20 × 30 m pond, 400 micron', key: 'pond:20 x 30 m:400' },
+  ],
+  [
+    { label: `Tilapia fingerlings, ${feed.fingerlings.per.toLocaleString('en-US')}`, key: 'fingerlings' },
+    { label: `Bird net, ${sizeLabel('10 x 10 m')}`, key: 'net:10 x 10 m' },
+    { label: 'Grower feed, 25 kg bag', key: 'feed:Grower' },
+    { label: 'Starter feed, 10 kg bag', key: 'feed:Starter 2' },
+  ],
+  [
+    ...sortedBands(feed).map((b, i) => ({ label: `Delivery, ${bandLabel(b).toLowerCase()}`, key: `band:${i}` })),
+    { label: 'Site visit, taken off the job', key: 'site-visit' },
+  ],
+];
+const first = rows.map((r) => r[0]);
+const W = 6; // price cells, right-aligned
+const cells = (key: string) => usd(resolvePrice(feed, key) ?? 0).padStart(W, ' ').split('');
 ---
 <section class="hero" aria-labelledby="hero-title" data-hero>
-  <canvas class="ripples" data-ripples aria-hidden="true"></canvas>
-  <div class="dots" aria-hidden="true"></div>
-  <div class="glow g1" aria-hidden="true"></div>
-  <div class="glow g2" aria-hidden="true"></div>
-  <svg class="lineart" viewBox="-10 -10 120 120" aria-hidden="true">
-    <path pathLength="1" d="M 26,0 L 100,0 L 100,44 C 86,48 68,44 56,52 C 38,64 22,42 0,54 L 0,26 A 26 26 0 0 1 26,0 Z" />
-    <path pathLength="1" d="M 0,60 C 22,48 38,70 56,58 C 68,50 86,54 100,50 L 100,74 A 26 26 0 0 1 74,100 L 0,100 Z" />
-  </svg>
+  <canvas class="caustics" data-caustics aria-hidden="true"></canvas>
+  <div class="shafts" aria-hidden="true"></div>
+  <canvas class="school" data-school aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
 
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="kicker"><span class="pulse"></span>Answering on WhatsApp now, day and night</p>
-      <h1 id="hero-title">
-        <span class="line"><span>Fish ponds,</span></span>
-        <span class="line"><span>built properly,</span></span>
-        <span class="line"><span>anywhere in</span></span>
-        <span class="line"><span class="sheen">Zimbabwe</span></span>
-      </h1>
-      <p class="hero-lede">We dig and line fish ponds, put up bird nets, and supply tilapia fingerlings and feed. Get a written price from our assistant in minutes.</p>
-      <div class="btn-row" data-first-cta>
+      <p class="status">
+        <svg class="sonar" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><circle class="s1" cx="12" cy="12" r="6.5" /><circle class="s2" cx="12" cy="12" r="10" /></svg>
+        Our assistant is answering on WhatsApp now
+      </p>
+      <h1 id="hero-title" data-hero-title>Fish ponds, built properly, anywhere in Zimbabwe</h1>
+      <p class="hero-lede" data-hero-in>We dig and line fish ponds, put up bird nets, and supply tilapia fingerlings and feed. Get a written price from our assistant in minutes.</p>
+      <div class="btn-row" data-first-cta data-hero-in>
         <WaButton tag="hero" message="Hi FishTech, I'd like a price for a fish pond." />
         <a class="btn btn-ghost" href="#prices">Price your pond</a>
       </div>
     </div>
 
-    <div class="stage" aria-hidden="true">
-      <svg class="pond" viewBox="0 0 560 400" data-pond-art>
-        <defs>
-          <linearGradient id="h-water" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#2fd0c6" stop-opacity=".55" />
-            <stop offset="1" stop-color="#00707c" stop-opacity=".35" />
-          </linearGradient>
-          <linearGradient id="h-wall" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#0d4a53" /><stop offset="1" stop-color="#062d34" />
-          </linearGradient>
-          <filter id="h-glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3" /></filter>
-          <clipPath id="h-clip"><polygon points={water.map(pt).join(' ')} /></clipPath>
-        </defs>
-        <g class="ground">
-          {groundLines.map((t) => <line x1={P(t, -8)[0]} y1={P(t, -8)[1]} x2={P(t, 28)[0]} y2={P(t, 28)[1]} />)}
-          {groundLines.map((t) => <line x1={P(-8, t)[0]} y1={P(-8, t)[1]} x2={P(28, t)[0]} y2={P(28, t)[1]} />)}
-        </g>
-        <polygon class="wall" points={[rim[0], rim[1], floor[1], floor[0]].map(pt).join(' ')} />
-        <polygon class="wall w2" points={[rim[0], rim[3], floor[3], floor[0]].map(pt).join(' ')} />
-        <polygon class="floor" points={floor.map(pt).join(' ')} />
-        <g class="folds">
-          {[0.2, 0.4, 0.6, 0.8].map((f) => <line x1={P(L * f, 0)[0]} y1={P(L * f, 0)[1]} x2={P(L * f, 0, -DEPTH)[0]} y2={P(L * f, 0, -DEPTH)[1]} />)}
-          {[0.2, 0.4, 0.6, 0.8].map((f) => <line x1={P(0, L * f)[0]} y1={P(0, L * f)[1]} x2={P(0, L * f, -DEPTH)[0]} y2={P(0, L * f, -DEPTH)[1]} />)}
-        </g>
-        <polygon class="water" points={water.map(pt).join(' ')} />
-        <g clip-path="url(#h-clip)"><g transform={m} data-pond-ripples></g></g>
-        <polygon class="rim glowline" points={rim.map(pt).join(' ')} filter="url(#h-glow)" />
-        <polygon class="rim draw" points={rim.map(pt).join(' ')} pathLength="1" />
-        <polyline class="edge draw" points={[rim[1], floor[1]].map(pt).join(' ')} pathLength="1" />
-        <polyline class="edge draw" points={[rim[3], floor[3]].map(pt).join(' ')} pathLength="1" />
-        <polyline class="edge draw" points={[rim[0], floor[0]].map(pt).join(' ')} pathLength="1" />
-        <g class="dims">
-          <line x1={P(0, L + 2.4)[0]} y1={P(0, L + 2.4)[1]} x2={P(L, L + 2.4)[0]} y2={P(L, L + 2.4)[1]} />
-          <text x={P(L / 2, L + 4.8)[0]} y={P(L / 2, L + 4.8)[1]} text-anchor="middle">20 m</text>
-          <line x1={P(L + 2.4, 0)[0]} y1={P(L + 2.4, 0)[1]} x2={P(L + 2.4, L)[0]} y2={P(L + 2.4, L)[1]} />
-          <text x={P(L + 4.4, L / 2)[0]} y={P(L + 4.4, L / 2)[1]} text-anchor="middle">20 m</text>
-          <line x1={P(-1.6, 0)[0]} y1={P(-1.6, 0)[1]} x2={P(-1.6, 0, -DEPTH)[0]} y2={P(-1.6, 0, -DEPTH)[1]} />
-          <text x={P(-1.6, 0, -DEPTH / 2)[0] - 10} y={P(-1.6, 0, -DEPTH / 2)[1]} text-anchor="end">1.5 m deep</text>
-        </g>
-      </svg>
-      <div class="chip c1"><span class="dot"></span>20 × 20 m, 300 micron <strong><Price k="pond:20 x 20 m:300" /></strong></div>
-      <div class="chip c2"><span class="dot"></span>HDPE liner, fitted</div>
-      <div class="chip c3"><span class="dot"></span>Bird net <strong><Price k="net:20 x 20 m" /></strong></div>
-      <div class="chip c4"><span class="dot"></span>Delivery across Zimbabwe</div>
-    </div>
+    <aside class="board" aria-label="Live prices" data-board data-rows={JSON.stringify(rows)} data-hero-in>
+      <header><span class="live"></span>Live prices<span class="src">from our price list</span></header>
+      <ol>
+        {first.map((it) => (
+          <li data-row data-key={it.key}>
+            <span class="label" data-label>{it.label}</span>
+            <span class="flaps num" aria-hidden="true">{cells(it.key).map((c) => <span class="flap">{c === ' ' ? ' ' : c}</span>)}</span>
+            <span class="visually-hidden" data-sr>{usd(resolvePrice(feed, it.key) ?? 0)}</span>
+          </li>
+        ))}
+      </ol>
+      <a href="/pond-prices" class="all">All prices</a>
+    </aside>
   </div>
 
-  <div class="wrap facts" role="list">
-    <div role="listitem"><strong class="num" data-count={nSizes}>{nSizes}</strong><span>standard pond sizes, other sizes on request</span></div>
-    <div role="listitem"><strong class="num" data-count={nMicrons}>{nMicrons}</strong><span>liner thicknesses, from <Price k="pond-from" /></span></div>
-    <div role="listitem"><strong class="num" data-count={nTowns}>{nTowns}</strong><span>towns priced for delivery, and more on request</span></div>
-    <div role="listitem"><strong class="num">24/7</strong><span>WhatsApp assistant, written quotations</span></div>
+  <div class="gauge" aria-hidden="true" data-gauge>
+    <span class="g-label">Depth <b data-depth>0.0</b> m</span>
+    <div class="g-rule">{Array.from({ length: 16 }, (_, i) => <i class={i % 5 === 0 ? 'major' : ''} data-n={i % 5 === 0 ? (i / 10).toFixed(1) : undefined}></i>)}<span class="g-mark" data-gauge-mark></span></div>
   </div>
+
   <svg class="edge-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
     <path d="M0,46 C220,70 380,18 620,40 C820,58 980,26 1180,36 C1300,42 1380,30 1440,26 V80 H0 Z" />
     <path class="edge-line" d="M0,46 C220,70 380,18 620,40 C820,58 980,26 1180,36 C1300,42 1380,30 1440,26" />
@@ -111,239 +80,171 @@ const nTowns = feed.towns.length;
 
 <style>
   .hero {
-    --ink-deep: #031b20;
     position: relative; overflow: hidden; isolation: isolate;
     margin-top: calc(-1 * var(--header-h)); padding-top: var(--header-h);
-    background: radial-gradient(120% 90% at 75% 30%, #0a4a55 0%, #05313a 38%, var(--ink-deep) 78%);
-    color: var(--white); min-height: min(100svh, 62rem); display: grid; grid-template-rows: 1fr auto auto;
+    background: linear-gradient(180deg, var(--deep) 0%, var(--ink-deep) 100%);
+    color: var(--white); min-height: min(100svh, 60rem); display: grid; grid-template-rows: 1fr auto;
   }
-  .ripples, .dots, .glow, .lineart { position: absolute; pointer-events: none; z-index: -1; }
-  .ripples { inset: 0; width: 100%; height: 100%; opacity: 0.9; }
-  .dots {
-    inset: 0;
-    background-image: radial-gradient(rgba(143, 203, 198, 0.22) 1px, transparent 1.4px);
-    background-size: 28px 28px;
-    mask-image: radial-gradient(80% 70% at 60% 40%, #000 30%, transparent 85%);
-    -webkit-mask-image: radial-gradient(80% 70% at 60% 40%, #000 30%, transparent 85%);
+  .caustics, .school, .shafts, .veil { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .caustics { z-index: -4; opacity: 0; transition: opacity 1.6s ease-out; }
+  .caustics.on { opacity: 1; }
+  .shafts {
+    z-index: -3; inset: -30% -10% 20% -10%; height: auto; mix-blend-mode: screen; opacity: 0.55;
+    background:
+      linear-gradient(104deg, transparent 18%, rgba(var(--glow-rgb), 0.07) 21%, transparent 25%),
+      linear-gradient(98deg, transparent 38%, rgba(var(--glow-rgb), 0.05) 40%, transparent 46%),
+      linear-gradient(108deg, transparent 58%, rgba(var(--glow-rgb), 0.08) 61%, transparent 64%),
+      linear-gradient(101deg, transparent 72%, rgba(var(--glow-rgb), 0.05) 76%, transparent 81%);
+    mask-image: linear-gradient(180deg, #000 0%, transparent 75%); -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 75%);
+    transform-origin: 50% 0;
   }
-  .glow { border-radius: 50%; filter: blur(70px); }
-  .g1 { width: 38rem; height: 38rem; right: -8rem; top: -6rem; background: radial-gradient(circle, rgba(0, 160, 170, 0.45), transparent 65%); }
-  .g2 { width: 30rem; height: 30rem; left: -10rem; bottom: -12rem; background: radial-gradient(circle, rgba(47, 168, 102, 0.28), transparent 65%); }
-  .lineart { width: min(56rem, 90vw); right: -12rem; top: 50%; transform: translateY(-48%) rotate(-8deg); opacity: 0.22; }
-  .lineart path { fill: none; stroke: #4fd1c5; stroke-width: 0.35; stroke-dasharray: 1; stroke-dashoffset: 0; }
+  .school { z-index: -2; opacity: 0; transition: opacity 1.4s ease-out; }
+  .school.on { opacity: 1; }
+  .veil { z-index: -1; background: linear-gradient(90deg, rgba(var(--deep-rgb), 0.7) 0%, rgba(var(--deep-rgb), 0.3) 40%, transparent 65%); }
 
-  .hero-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 2rem; align-items: center; padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem) 1.5rem; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(2rem, 1rem + 3vw, 4rem); align-items: end; padding-block: clamp(3rem, 2rem + 5vw, 7rem) clamp(2rem, 1rem + 3vw, 4rem); }
   .hero-copy { display: grid; gap: 1.6rem; justify-items: start; }
-  .kicker {
-    display: inline-flex; align-items: center; gap: 0.6rem; font-size: var(--step--1); font-weight: 650; color: #cfe7e4;
-    padding: 0.45rem 0.9rem 0.45rem 0.75rem; border-radius: 999px; background: rgba(255, 255, 255, 0.05);
-    box-shadow: inset 0 0 0 1px rgba(143, 203, 198, 0.22); backdrop-filter: blur(6px);
-  }
-  .pulse { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(47, 168, 102, 0.6); animation: pulse 2s infinite; }
-  h1 { color: var(--white); font-size: clamp(3rem, 1.6rem + 4.8vw, 6rem); font-weight: 800; font-stretch: 68%; line-height: 0.92; letter-spacing: -0.02em; }
-  .line { display: block; overflow: hidden; padding-bottom: 0.05em; }
-  .line > span { display: block; }
-  .sheen {
-    background: linear-gradient(100deg, #ffffff 40%, #7fe3d9 50%, #ffffff 60%); background-size: 250% 100%; background-position: 100% 0;
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .hero-lede { font-size: var(--step-1); line-height: 1.5; max-width: 30em; color: #b7d3d1; }
-  .hero :global(.btn-ghost) { background: rgba(255, 255, 255, 0.06); color: var(--white); box-shadow: inset 0 0 0 1.5px rgba(183, 211, 209, 0.45); backdrop-filter: blur(6px); }
+  .status { display: inline-flex; align-items: center; gap: 0.6rem; font-size: var(--step--1); font-weight: 600; color: var(--on-deep-muted); }
+  .sonar { width: 1.4rem; height: 1.4rem; fill: none; stroke: var(--green); stroke-width: 1.4; }
+  .sonar circle:first-child { fill: var(--green); stroke: none; }
+  h1 { color: var(--white); font-size: clamp(3rem, 1.4rem + 5.6vw, 6.5rem); font-weight: 800; font-stretch: 66%; line-height: 0.92; letter-spacing: -0.02em; max-width: 12ch; }
+  .hero-lede { font-size: var(--step-1); line-height: 1.5; max-width: 30em; color: var(--on-deep-muted); }
+  .hero :global(.btn-ghost) { background: rgba(255, 255, 255, 0.06); color: var(--white); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35); }
   .hero :global(.btn-ghost:hover) { background: rgba(255, 255, 255, 0.12); }
-  .hero :global(.btn-main) { box-shadow: 0 10px 40px -10px rgba(245, 184, 46, 0.55); }
 
-  .stage { position: relative; }
-  .pond { width: 100%; height: auto; overflow: visible; }
-  .ground line { stroke: rgba(143, 203, 198, 0.1); stroke-width: 1; }
-  .wall { fill: url(#h-wall); }
-  .wall.w2 { fill: #0a3c44; }
-  .floor { fill: #062a31; }
-  .folds line { stroke: rgba(143, 203, 198, 0.12); stroke-width: 1; }
-  .water { fill: url(#h-water); }
-  .rim { fill: none; stroke: #5fe0d4; stroke-width: 2; stroke-linejoin: round; }
-  .glowline { stroke-width: 5; opacity: 0.55; }
-  .edge { fill: none; stroke: rgba(95, 224, 212, 0.7); stroke-width: 1.4; }
-  .dims line { stroke: rgba(207, 231, 228, 0.55); stroke-width: 1; stroke-dasharray: 3 4; }
-  .dims text { fill: #cfe7e4; font: 650 13px var(--font); }
-  :global([data-pond-ripples]) ellipse, :global([data-pond-ripples]) circle { fill: none; stroke: #bff4ee; vector-effect: non-scaling-stroke; }
-
-  .chip {
-    position: absolute; display: inline-flex; align-items: center; gap: 0.55rem; white-space: nowrap;
-    font-size: var(--step--1); font-weight: 650; color: #e6f4f2; padding: 0.55rem 0.95rem 0.55rem 0.8rem; border-radius: 999px;
-    background: rgba(4, 30, 35, 0.72); box-shadow: inset 0 0 0 1px rgba(143, 203, 198, 0.25), 0 12px 30px -12px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
+  .board {
+    align-self: end; background: rgba(2, 12, 16, 0.55); border-radius: 18px; padding: 1.1rem 1.25rem 1rem;
+    box-shadow: inset 0 0 0 1px rgba(var(--glow-rgb), 0.18), 0 40px 80px -40px rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);
   }
-  .chip strong { color: var(--gold); font-weight: 800; }
-  .chip .dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #4fd1c5; box-shadow: 0 0 10px #4fd1c5; }
-  .c1 { left: 2%; top: 4%; } .c2 { right: 0; top: 30%; } .c3 { left: 6%; bottom: 14%; } .c4 { right: 6%; bottom: 2%; }
+  .board header { display: flex; align-items: center; gap: 0.55rem; font-weight: 750; font-size: var(--step--1); color: var(--white); padding-bottom: 0.8rem; border-bottom: 1px solid rgba(var(--glow-rgb), 0.15); }
+  .board .src { margin-left: auto; font-weight: 500; color: var(--on-deep-muted); }
+  .live { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--green); animation: blink 2.4s ease-in-out infinite; }
+  .board ol { list-style: none; margin: 0; padding: 0; }
+  .board li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; padding-block: 0.85rem; border-bottom: 1px solid rgba(var(--glow-rgb), 0.1); min-height: 3.6rem; }
+  .label { color: #dcefed; font-size: var(--step--1); line-height: 1.3; }
+  .flaps { display: inline-flex; gap: 2px; perspective: 400px; }
+  .flap {
+    display: inline-grid; place-items: center; width: 1.25rem; height: 1.8rem; border-radius: 3px; font-weight: 800; font-size: 1.15rem;
+    color: var(--gold); background: linear-gradient(180deg, #0b2228 0%, #0b2228 49%, #06171b 51%, #06171b 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); transform-origin: 50% 50%;
+  }
+  .all { display: inline-block; margin-top: 0.8rem; font-size: var(--step--1); font-weight: 650; color: var(--glow); text-decoration: none; }
+  .all:hover { text-decoration: underline; }
 
-  .edge-wave { display: block; width: 100%; height: clamp(2.5rem, 5vw, 5rem); margin-top: 0.5rem; }
+  .gauge { position: absolute; right: clamp(0.75rem, 2vw, 1.75rem); top: calc(var(--header-h) + 3rem); bottom: 6rem; display: grid; grid-template-rows: auto 1fr; gap: 0.75rem; justify-items: end; font-size: 0.72rem; color: var(--on-deep-muted); }
+  .g-label b { color: var(--white); font-variant-numeric: tabular-nums; }
+  .g-rule { position: relative; display: flex; flex-direction: column; justify-content: space-between; width: 2.2rem; }
+  .g-rule i { display: block; height: 1px; width: 0.5rem; margin-left: auto; background: rgba(var(--glow-rgb), 0.35); position: relative; }
+  .g-rule i.major { width: 1rem; background: rgba(var(--glow-rgb), 0.7); }
+  .g-rule i[data-n]::before { content: attr(data-n); position: absolute; right: 1.35rem; top: -0.45rem; font-style: normal; }
+  .g-mark { position: absolute; right: 0; top: 0; width: 1.4rem; height: 2px; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+
+  .edge-wave { display: block; width: 100%; height: clamp(2.5rem, 5vw, 5rem); margin-bottom: -1px; }
   .edge-wave path { fill: var(--mist); }
-  .edge-wave .edge-line { fill: none; stroke: #2fa866; stroke-width: 2; vector-effect: non-scaling-stroke; }
-  .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid rgba(143, 203, 198, 0.16); }
-  .facts > div { display: grid; gap: 0.25rem; padding: 1.4rem 1.25rem 1.6rem 0; }
-  .facts > div + div { padding-left: 1.5rem; border-left: 1px solid rgba(143, 203, 198, 0.16); }
-  .facts strong { font-size: clamp(2rem, 1.5rem + 1.8vw, 3rem); font-weight: 800; font-stretch: 75%; line-height: 1; color: #5fe0d4; }
-  .facts span { font-size: var(--step--1); color: #9fc2bf; line-height: 1.4; }
-  .facts :global([data-price]) { color: var(--white); font-weight: 700; }
+  .edge-wave .edge-line { fill: none; stroke: var(--green); stroke-width: 2; vector-effect: non-scaling-stroke; }
 
-  @keyframes pulse { 70% { box-shadow: 0 0 0 0.6rem rgba(47, 168, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(47, 168, 102, 0); } }
-
-  /* Entrance, once the intro has finished (or straight away when there is none). */
+  @keyframes blink { 50% { opacity: 0.35; } }
   @media (prefers-reduced-motion: no-preference) {
-    :global(html.js:not(.intro-done)) .hero .line > span,
-    :global(html.js:not(.intro-done)) .hero .kicker,
-    :global(html.js:not(.intro-done)) .hero .hero-lede,
-    :global(html.js:not(.intro-done)) .hero .btn-row,
-    :global(html.js:not(.intro-done)) .hero .chip,
-    :global(html.js:not(.intro-done)) .hero .facts > div { opacity: 0; }
-    :global(html.intro-done) .hero .line > span { animation: up 900ms var(--ease-out) both; }
-    :global(html.intro-done) .hero .line:nth-child(2) > span { animation-delay: 70ms; }
-    :global(html.intro-done) .hero .line:nth-child(3) > span { animation-delay: 140ms; }
-    :global(html.intro-done) .hero .line:nth-child(4) > span { animation-delay: 210ms; }
-    :global(html.intro-done) .hero .sheen { animation: up 900ms var(--ease-out) 210ms both, sheen 2.2s ease-in-out 1.1s both; }
-    :global(html.intro-done) .hero .kicker { animation: fadeUp 700ms var(--ease-out) both; }
-    :global(html.intro-done) .hero .hero-lede { animation: fadeUp 800ms var(--ease-out) 350ms both; }
-    :global(html.intro-done) .hero .btn-row { animation: fadeUp 800ms var(--ease-out) 450ms both; }
-    :global(html.intro-done) .hero .draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: drawline 1400ms cubic-bezier(0.65, 0, 0.35, 1) 200ms forwards; }
-    :global(html.intro-done) .hero .glowline { animation: fadeIn 900ms ease-out 1100ms both; }
-    :global(html.intro-done) .hero .water { animation: fadeIn 1000ms ease-out 900ms both; }
-    :global(html.intro-done) .hero .wall, :global(html.intro-done) .hero .floor, :global(html.intro-done) .hero .folds { animation: fadeIn 900ms ease-out 400ms both; }
-    :global(html.intro-done) .hero .dims { animation: fadeIn 700ms ease-out 1300ms both; }
-    :global(html.intro-done) .hero .lineart path { stroke-dashoffset: 1; animation: drawline 2.4s cubic-bezier(0.65, 0, 0.35, 1) 300ms forwards; }
-    :global(html.intro-done) .hero .chip { animation: chipIn 700ms var(--ease-out) both, float 6s ease-in-out 1.6s infinite; }
-    :global(html.intro-done) .hero .c1 { animation-delay: 1000ms, 1.7s; }
-    :global(html.intro-done) .hero .c2 { animation-delay: 1150ms, 2.4s; }
-    :global(html.intro-done) .hero .c3 { animation-delay: 1300ms, 2s; }
-    :global(html.intro-done) .hero .c4 { animation-delay: 1450ms, 2.8s; }
-    :global(html.intro-done) .hero .facts > div { animation: fadeUp 700ms var(--ease-out) both; }
-    :global(html.intro-done) .hero .facts > div:nth-child(1) { animation-delay: 600ms; }
-    :global(html.intro-done) .hero .facts > div:nth-child(2) { animation-delay: 680ms; }
-    :global(html.intro-done) .hero .facts > div:nth-child(3) { animation-delay: 760ms; }
-    :global(html.intro-done) .hero .facts > div:nth-child(4) { animation-delay: 840ms; }
-    :global(html.intro-done) .hero .g1 { animation: drift 18s ease-in-out infinite alternate; }
-    :global(html.intro-done) .hero .g2 { animation: drift 22s ease-in-out infinite alternate-reverse; }
+    .sonar .s1, .sonar .s2 { animation: ping 2.4s ease-out infinite; transform-origin: center; transform-box: fill-box; }
+    .sonar .s2 { animation-delay: 0.4s; }
+    .shafts { animation: sway 14s ease-in-out infinite alternate; }
+    :global(html.motion:not(.hero-ready)) [data-hero-in], :global(html.motion:not(.hero-ready)) .status, :global(html.motion:not(.hero-ready)) .gauge { opacity: 0; }
+    :global(html.motion:not(.hero-ready)) [data-hero-title] { visibility: hidden; }
   }
-  @keyframes up { from { transform: translateY(105%); } to { transform: none; } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes drawline { to { stroke-dashoffset: 0; } }
-  @keyframes chipIn { from { opacity: 0; transform: translateY(10px) scale(0.96); } to { opacity: 1; transform: none; } }
-  @keyframes float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -7px; } }
-  @keyframes sheen { from { background-position: 100% 0; } to { background-position: 0% 0; } }
-  @keyframes drift { from { transform: translate(0, 0); } to { transform: translate(-3rem, 2rem); } }
+  @keyframes ping { 0% { opacity: 1; transform: scale(0.6); } 100% { opacity: 0; transform: scale(1.3); } }
+  @keyframes sway { from { transform: rotate(-2.5deg) translateX(-2%); } to { transform: rotate(2.5deg) translateX(2%); } }
 
-  @media (max-width: 960px) {
-    .hero-grid { grid-template-columns: 1fr; padding-top: 2rem; }
-    .stage { max-width: 34rem; width: 100%; justify-self: center; margin-top: 0.5rem; }
-    .lineart { right: -22rem; opacity: 0.16; }
-    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .facts > div:nth-child(3) { padding-left: 0; border-left: 0; }
-    .facts > div:nth-child(n + 3) { border-top: 1px solid rgba(143, 203, 198, 0.16); }
-  }
-  @media (max-width: 520px) {
-    .chip { font-size: 0.78rem; padding: 0.4rem 0.7rem 0.4rem 0.6rem; }
-    .c2, .c4 { display: none; }
-    .c1 { left: 0; top: 0; } .c3 { left: auto; right: 0; bottom: 6%; }
+  @media (max-width: 1100px) { .gauge { display: none; } }
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; align-items: start; }
+    .veil { background: linear-gradient(180deg, rgba(var(--deep-rgb), 0.7) 0%, rgba(var(--deep-rgb), 0.35) 60%, transparent 100%); }
+    .board { width: 100%; max-width: 30rem; }
   }
 </style>
 
 <script>
+  import { gsap } from 'gsap';
+  import { SplitText } from 'gsap/SplitText';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { currentFeed } from '../scripts/live-prices';
-  // Rain-like ripples on the background, and expanding rings on the pond's water.
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  const canvas = document.querySelector<HTMLCanvasElement>('[data-ripples]');
-  const pondG = document.querySelector<SVGGElement>('[data-pond-ripples]');
-  currentFeed();
+  import { resolvePrice, usd } from '../lib/pricing';
+  import { startCaustics } from '../scripts/caustics';
+  import { startSchool } from '../scripts/school';
+  import { DUR, EASE, STAGGER, reduced } from '../scripts/motion';
+  gsap.registerPlugin(SplitText, ScrollTrigger);
 
-  type Ring = { x: number; y: number; r: number; max: number; born: number; life: number };
-  let rings: Ring[] = [];
-  let pondRings: { el: SVGCircleElement; born: number; cx: number; cy: number }[] = [];
-  let visible = true;
-  let last = 0;
-  let lastPond = 0;
+  const hero = document.querySelector<HTMLElement>('[data-hero]')!;
+  const root = document.documentElement;
+  const still = reduced();
 
-  function size() {
-    if (!canvas || !hero) return;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    canvas.width = hero.clientWidth * dpr;
-    canvas.height = hero.clientHeight * dpr;
-    canvas.getContext('2d')?.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function frame(t: number) {
-    if (!canvas || !hero) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const w = hero.clientWidth, h = hero.clientHeight;
-    ctx.clearRect(0, 0, w, h);
-    if (t - last > 520 && rings.length < 14) {
-      last = t;
-      rings.push({ x: Math.random() * w, y: h * (0.15 + Math.random() * 0.85), r: 0, max: 40 + Math.random() * 110, born: t, life: 3200 + Math.random() * 1800 });
-    }
-    rings = rings.filter((g) => t - g.born < g.life);
-    for (const g of rings) {
-      const k = (t - g.born) / g.life;
-      const r = g.max * (1 - Math.pow(1 - k, 3));
-      for (let i = 0; i < 3; i++) {
-        const rr = r - i * 9;
-        if (rr <= 0) continue;
-        ctx.beginPath();
-        ctx.ellipse(g.x, g.y, rr, rr * 0.36, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(95, 224, 212, ${(0.32 - i * 0.09) * (1 - k)})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-    }
-    if (pondG) {
-      if (t - lastPond > 900) {
-        lastPond = t;
-        const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        const cx = 3 + Math.random() * 14, cy = 3 + Math.random() * 14;
-        el.setAttribute('cx', String(cx)); el.setAttribute('cy', String(cy));
-        el.setAttribute('fill', 'none'); el.setAttribute('stroke', '#bff4ee'); el.setAttribute('vector-effect', 'non-scaling-stroke');
-        pondG.appendChild(el);
-        pondRings.push({ el, born: t, cx, cy });
-      }
-      pondRings = pondRings.filter((p) => {
-        const k = (t - p.born) / 3600;
-        if (k >= 1) { p.el.remove(); return false; }
-        p.el.setAttribute('r', (0.2 + 7 * (1 - Math.pow(1 - k, 2))).toFixed(2));
-        p.el.setAttribute('stroke-opacity', (0.75 * (1 - k)).toFixed(2));
-        p.el.setAttribute('stroke-width', '1');
-        return true;
-      });
-    }
-    if (visible && !document.hidden) requestAnimationFrame(frame);
-  }
-
-  function countUp() {
-    document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
-      const to = Number(el.dataset.count);
-      if (reduce || !to) return;
-      const t0 = performance.now();
-      const step = (t: number) => {
-        const k = Math.min(1, (t - t0) / 1100);
-        el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3))));
-        if (k < 1) requestAnimationFrame(step);
-      };
-      el.textContent = '0';
-      requestAnimationFrame(step);
+  // Split-flap price board: each row moves on to its next item in turn.
+  const board = hero.querySelector<HTMLElement>('[data-board]')!;
+  const rows = JSON.parse(board.dataset.rows || '[]') as { label: string; key: string }[][];
+  const rowEls = Array.from(board.querySelectorAll<HTMLElement>('[data-row]'));
+  const idx = rows.map(() => 0);
+  const W = 6;
+  function flip(r: number) {
+    const feed = currentFeed();
+    idx[r] = (idx[r] + 1) % rows[r].length;
+    const item = rows[r][idx[r]];
+    const el = rowEls[r];
+    const price = usd(resolvePrice(feed, item.key) ?? 0);
+    const chars = price.padStart(W, ' ').split('');
+    const label = el.querySelector<HTMLElement>('[data-label]')!;
+    const flaps = Array.from(el.querySelectorAll<HTMLElement>('.flap'));
+    el.querySelector<HTMLElement>('[data-sr]')!.textContent = price;
+    const tl = gsap.timeline();
+    tl.to(label, { opacity: 0, y: -8, duration: DUR.quick, ease: EASE.inOut })
+      .call(() => { label.textContent = item.label; })
+      .fromTo(label, { y: 8 }, { opacity: 1, y: 0, duration: DUR.quick, ease: EASE.soft });
+    flaps.forEach((f, i) => {
+      const next = chars[i] === ' ' ? ' ' : chars[i];
+      if (f.textContent === next) return;
+      tl.to(f, { rotationX: -90, duration: 0.12, ease: 'power1.in' }, 0.05 + i * 0.05)
+        .call(() => { f.textContent = next; }, undefined, 0.17 + i * 0.05)
+        .fromTo(f, { rotationX: 90 }, { rotationX: 0, duration: 0.2, ease: 'back.out(2)' }, 0.17 + i * 0.05);
     });
   }
 
-  if (!reduce && canvas && hero) {
-    size();
-    addEventListener('resize', size);
-    new IntersectionObserver(([e]) => {
-      const was = visible;
-      visible = e.isIntersecting;
-      if (visible && !was) requestAnimationFrame(frame);
-    }).observe(hero);
-    document.addEventListener('visibilitychange', () => { if (!document.hidden && visible) requestAnimationFrame(frame); });
-    const go = () => { requestAnimationFrame(frame); setTimeout(countUp, 600); };
-    if (document.documentElement.classList.contains('intro-done')) go();
-    else addEventListener('fishtech:intro-done', go, { once: true });
+  function heroIn() {
+    root.classList.add('hero-ready');
+    if (still) return;
+    const title = hero.querySelector<HTMLElement>('[data-hero-title]')!;
+    const split = SplitText.create(title, { type: 'lines', mask: 'lines', linesClass: 'm-line' });
+    const tl = gsap.timeline({ defaults: { ease: EASE.out } });
+    tl.from(split.lines, { yPercent: 108, duration: DUR.epic, stagger: STAGGER * 1.4 })
+      .from('.status', { opacity: 0, y: 12, duration: DUR.slow }, 0)
+      .from(hero.querySelectorAll('.hero-copy [data-hero-in]'), { opacity: 0, y: 24, duration: DUR.slow, stagger: 0.12 }, 0.45)
+      .from(board, { opacity: 0, y: 40, duration: DUR.slow }, 0.6)
+      .from(board.querySelectorAll('.flap'), { rotationX: -90, opacity: 0, duration: 0.35, stagger: 0.02, ease: 'back.out(2)' }, 0.85)
+      .from('.gauge', { opacity: 0, duration: DUR.slow }, 1);
+    // Depth gauge sinks from 0 to 1.5 m as the hero scrolls away.
+    const mark = hero.querySelector<HTMLElement>('[data-gauge-mark]');
+    const depth = hero.querySelector<HTMLElement>('[data-depth]');
+    const rule = hero.querySelector<HTMLElement>('.g-rule');
+    if (mark && depth && rule) {
+      ScrollTrigger.create({
+        trigger: hero, start: 'top top', end: 'bottom top', scrub: true,
+        onUpdate: (s) => { gsap.set(mark, { y: s.progress * rule.clientHeight }); depth.textContent = (s.progress * 1.5).toFixed(1); },
+      });
+    }
+    // Board rows turn over in a steady rhythm, one row at a time.
+    let r = 0;
+    setInterval(() => { if (!document.hidden) { flip(r); r = (r + 1) % rows.length; } }, 2600);
   }
+
+  // Backgrounds start straight away (behind the intro), the content after it.
+  if (!still) {
+    startCaustics(hero.querySelector('[data-caustics]')!, hero);
+    startSchool(hero.querySelector('[data-school]')!, hero);
+  }
+  if (root.classList.contains('intro')) addEventListener('fishtech:intro-done', heroIn, { once: true });
+  else heroIn();
+  // Prices changed in the live feed: refresh what the board shows now.
+  addEventListener('fishtech:prices', () => rowEls.forEach((el, i) => {
+    const item = rows[i][idx[i]];
+    const price = usd(resolvePrice(currentFeed(), item.key) ?? 0);
+    el.querySelector<HTMLElement>('[data-sr]')!.textContent = price;
+    price.padStart(W, ' ').split('').forEach((c, j) => { const f = el.querySelectorAll('.flap')[j]; if (f) f.textContent = c === ' ' ? ' ' : c; });
+  }));
 </script>

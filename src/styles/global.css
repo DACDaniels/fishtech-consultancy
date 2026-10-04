@@ -3,25 +3,33 @@
    Layout: a 12-column grid, everything left-aligned; one bold moment per page. */
 
 :root {
-  /* Brand */
-  --teal: #00707c;
-  --deep: #063a43;
-  --gold: #f5b82e;
+  /* Brand. Two palettes are wired in for Daniel's comparison on the preview:
+     A+ "Bold Teal and Sun" (default) and B "Cobalt and Green" (html[data-palette='b']). */
+  --teal: #00737b;           /* text, links and prices on light backgrounds (4.6:1 on mist) */
+  --brand: #00a3a3;          /* bold brand surfaces */
+  --glow: #19d3c5;           /* vivid accent on dark backgrounds (7.4:1 on deep) */
+  --glow-rgb: 25, 211, 197;
+  --deep: #04313a;
+  --deep-rgb: 4, 49, 58;
+  --ink-deep: #021b20;
+  --gold: #f5b82e;           /* main button and totals */
+  --gold-hover: #ffc94d;
+  --on-gold: #04313a;
   --green: #2fa866;
-  --mist: #eef5f4;
+  --mist: #eef6f5;
   --ink: #12262b;
-  /* Derived neutrals, all tinted toward the teal */
+  /* Derived neutrals */
   --white: #ffffff;
-  --muted: #45605f;          /* 6.1:1 on mist */
+  --muted: #45605f;
   --line: #cddcda;
   --tint: #dcebe9;
   --deep-2: #0b4a54;
-  --on-deep-muted: #b7d3d1;  /* 8.9:1 on deep */
+  --on-deep-muted: #b7d3d1;
   /* Delivery bands, light to deep */
   --band-1: #8fcbc6;
   --band-2: #3fa3a6;
-  --band-3: #00707c;
-  --band-4: #063a43;
+  --band-3: #00737b;
+  --band-4: #04313a;
 
   --font: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
   /* Type scale: ratio 1.25 from an 18 px body */
@@ -97,8 +105,8 @@ p { margin: 0; text-wrap: pretty; }
 }
 .btn:active { transform: scale(0.97); }
 .btn svg { width: 1.35rem; height: 1.35rem; flex: none; }
-.btn-main { background: var(--gold); color: var(--deep); }
-.btn-main:hover { background: #ffc94d; }
+.btn-main { background: var(--gold); color: var(--on-gold); }
+.btn-main:hover { background: var(--gold-hover); }
 .btn-line { background: transparent; color: var(--teal); box-shadow: inset 0 0 0 2px currentColor; }
 .btn-line:hover { background: var(--tint); }
 .deep .btn-line { color: var(--white); }
@@ -222,12 +230,21 @@ figcaption { font-size: var(--step--1); color: var(--muted); margin-top: 0.6rem;
 .site-header[data-tone='dark']:not([data-scrolled]) .menu summary { background: rgba(255, 255, 255, 0.08); border-color: rgba(183, 211, 209, 0.3); color: #ffffff; }
 .site-header { transition: background-color 300ms, border-color 300ms; }
 
-/* Scroll reveals. Content is visible without JavaScript and for reduced motion. */
-@media (prefers-reduced-motion: no-preference) {
-  html.js [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 900ms var(--ease-out), transform 900ms var(--ease-out); transition-delay: var(--d, 0ms); }
-  html.js [data-reveal].in { opacity: 1; transform: none; }
-  html.js [data-reveal='wipe'] { opacity: 1; transform: none; clip-path: inset(0 0 100% 0); transition: clip-path 1200ms cubic-bezier(0.65, 0, 0.35, 1); transition-delay: var(--d, 0ms); }
-  html.js [data-reveal='wipe'].in { clip-path: inset(0 0 0 0); }
-  html.js [data-reveal='wipe'] img { transform: scale(1.12); transition: transform 1600ms var(--ease-out); transition-delay: var(--d, 0ms); }
-  html.js [data-reveal='wipe'].in img { transform: none; }
+/* Motion system (src/scripts/motion.ts, docs/MOTION.md). Until the engine is ready,
+   elements that will animate in are held back so they don't flash. Nothing is hidden
+   without JavaScript or for reduced motion, and a failsafe in <head> releases them. */
+html.motion:not(.motion-ready) [data-motion~='fade'],
+html.motion:not(.motion-ready) [data-motion~='list'] > *,
+html.motion:not(.motion-ready) [data-motion~='wipe'] { opacity: 0; }
+html.motion:not(.motion-ready) [data-motion~='lines'] { visibility: hidden; }
+.m-line { padding-bottom: 0.06em; margin-bottom: -0.06em; }
+
+/* Palette B: Cobalt and Green */
+html[data-palette='b'] {
+  --teal: #0050a0; --brand: #0050a0; --glow: #3db2ff; --glow-rgb: 61, 178, 255;
+  --deep: #062447; --deep-rgb: 6, 36, 71; --ink-deep: #020f22;
+  --gold: #00a86b; --gold-hover: #12c07e; --on-gold: #062447; --green: #00a86b;
+  --mist: #eef3f9; --ink: #10213a; --muted: #45586f; --line: #cbd8e8; --tint: #dce7f5;
+  --deep-2: #0b3466; --on-deep-muted: #b5c7de;
+  --band-1: #9cc8f2; --band-2: #3d8ad6; --band-3: #0050a0; --band-4: #062447;
 }

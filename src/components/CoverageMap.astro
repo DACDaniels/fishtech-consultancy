@@ -8,7 +8,7 @@ const m = buildMap(feed);
 const harare = m.towns.find((t) => t.place === 'Harare');
 const right = new Set(m.towns.filter((t) => t.x < m.width * 0.55 && t.place !== 'Harare').map((t) => t.place));
 ---
-<figure class="map" data-reveal-map>
+<figure class="map" data-motion="cue">
   <svg viewBox={`0 0 ${m.width} ${m.height}`} role="img" aria-labelledby="map-title map-desc">
     <title id="map-title">Map of Zimbabwe showing the towns we deliver to</title>
     <desc id="map-desc">Every town on our list, shaded by its delivery and logistics band, measured by road from Harare.</desc>
