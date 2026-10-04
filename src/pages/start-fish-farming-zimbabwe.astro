@@ -1,0 +1,152 @@
+---
+// Facts on this page come from blueacre-ops/docs/sales/customer-knowledge.md
+// and the price feed. Nothing else is stated as fact.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Planner from '../components/Planner.astro';
+import WaButton from '../components/WaButton.astro';
+import Price from '../components/Price.astro';
+import { Picture } from 'astro:assets';
+import fingerlings from '../assets/photos/fingerlings-under-net-2.jpg';
+import crew from '../assets/photos/ponds-crew-lining.jpg';
+import { feed, plan } from '../lib/site';
+import { pondSizes, stockingPlan } from '../lib/pricing';
+
+const sizes = pondSizes(feed).map((s) => ({ ...s, fish: stockingPlan(feed, plan, s.area).fingerlings }));
+const article = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: 'How to start fish farming in Zimbabwe',
+  author: { '@type': 'Organization', name: 'FishTech' },
+  publisher: { '@type': 'Organization', name: 'FishTech', logo: { '@type': 'ImageObject', url: 'https://fishtech.co.zw/brand/icon-512.png' } },
+  datePublished: '2026-10-04', inLanguage: 'en',
+};
+---
+<Base
+  title="How to start fish farming in Zimbabwe | A plain guide | FishTech"
+  description="Starting a tilapia pond in Zimbabwe: what you need, which pond size, how many fingerlings, how much feed at each stage, and the mistakes to avoid."
+  jsonLd={[article]}
+>
+  <PageHero title="How to start fish farming in Zimbabwe" crumb="Start fish farming">
+    <p class="lede">A plain guide to your first tilapia pond: what you need, how big to build, how many fish to stock, how much feed they eat, and what to watch out for.</p>
+  </PageHero>
+
+  <article class="wrap guide">
+    <nav class="toc" aria-label="On this page">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#what-you-need">What you need</a></li>
+        <li><a href="#pond-size">Choosing a pond size</a></li>
+        <li><a href="#liner">Liners</a></li>
+        <li><a href="#stocking">Stocking</a></li>
+        <li><a href="#feeding">Feeding by stage</a></li>
+        <li><a href="#care">Birds, water and chemicals</a></li>
+        <li><a href="#harvest">Harvest and selling</a></li>
+        <li><a href="#mistakes">Common mistakes</a></li>
+      </ol>
+    </nav>
+
+    <div class="prose">
+      <p>Tilapia is the main farmed fish in Zimbabwe. It grows well in warm water and is popular with buyers. A well-run pond can be a good business, but it depends on good water, good feeding, healthy fingerlings, and having buyers ready before harvest.</p>
+
+      <h2 id="what-you-need">What you need</h2>
+      <ul>
+        <li><strong>Water you can rely on all year</strong>, from a borehole, dam or river.</li>
+        <li><strong>A sunny, open site</strong> for the pond.</li>
+        <li><strong>A pond</strong>, dug and lined.</li>
+        <li><strong>Good fingerlings</strong>, the young fish you stock.</li>
+        <li><strong>Fish feed</strong> for each stage of growth.</li>
+        <li><strong>Someone to feed and watch the fish every day.</strong></li>
+      </ul>
+      <p>A good first step is one or two ponds. Learn how to run them, then grow from there.</p>
+
+      <h2 id="pond-size">Choosing a pond size</h2>
+      <p>Our standard ponds are 1.5 m deep. A 10 × 10 m pond holds 1,500 fingerlings, and larger ponds hold more in proportion.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Pond</th><th scope="col">Fingerlings</th><th scope="col" class="price">From</th></tr></thead>
+          <tbody>
+            {sizes.map((s) => <tr><th scope="row">{s.label}</th><td class="num">{s.fish.toLocaleString('en-US')}</td><td class="price"><Price k={`pond:${s.key}:250`} /></td></tr>)}
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">"From" is the price with 250 micron liner. See <a href="/pond-prices">all pond prices</a>.</p>
+
+      <h2 id="liner">Liners, and why thickness matters</h2>
+      <p>A lined pond holds its water. We use HDPE plastic liner in three thicknesses. Thicker liner is stronger and lasts longer.</p>
+      <ul>
+        <li><strong>250 micron</strong>, standard production lining.</li>
+        <li><strong>300 micron</strong>, for extra durability.</li>
+        <li><strong>400 micron</strong>, heavy duty, for commercial farms.</li>
+      </ul>
+      <p>We also supply liner up to 1 mm thick on request.</p>
+
+      <figure>
+        <div class="photo wide"><Picture src={crew} formats={['avif', 'webp']} widths={[600, 1000, 1400]} sizes="(max-width: 860px) 100vw, 640px" alt="The crew working on several lined ponds" loading="lazy" /></div>
+        <figcaption>Fitting liner across several ponds, September 2025.</figcaption>
+      </figure>
+
+      <h2 id="stocking">Stocking</h2>
+      <p>Stock 1,500 fingerlings in a 10 × 10 m pond, and more in proportion in a bigger one. We sell tilapia fingerlings in lots of 1,500 for <Price k="fingerlings" />.</p>
+      <p>We buy our fingerlings from suppliers, so we can't promise how fast they will grow.</p>
+
+      <h2 id="feeding">Feeding by stage</h2>
+      <p>Feed is the biggest running cost of fish farming. Feeding the right amount, not too much and not too little, makes the biggest difference to profit.</p>
+      <p>Fish need different feed as they grow. For one 10 × 10 m pond of 1,500 fish, from fingerling to harvest, it takes about 470 kg of feed. You don't need to buy it all at once: buy each stage as your fish grow into it.</p>
+    </div>
+
+    <div class="planner-wrap">
+      <h3>Plan your fish and feed</h3>
+      <Planner />
+    </div>
+
+    <div class="prose">
+      <h2 id="care">Birds, water and chemicals</h2>
+      <p>Birds eat small fish. A bird net over the pond protects them.</p>
+      <figure>
+        <div class="photo wide"><Picture src={fingerlings} formats={['avif', 'webp']} widths={[600, 1000, 1400]} sizes="(max-width: 860px) 100vw, 640px" alt="Young tilapia in green pond water under a bird net" loading="lazy" /></div>
+        <figcaption>Fingerlings under a bird net, February 2026.</figcaption>
+      </figure>
+      <p>We don't include chemicals in our packages, and we advise farmers not to use chemicals in their ponds.</p>
+
+      <h2 id="harvest">Harvest and selling</h2>
+      <p>Tilapia usually take about 6 to 8 months to reach a size people like to buy, if they are fed well and the water is good.</p>
+      <p>Find your buyers before harvest. Fish that are ready with nowhere to go keep eating feed.</p>
+
+      <h2 id="mistakes">Common mistakes</h2>
+      <ul>
+        <li><strong>Guessing how much to feed.</strong> Too much wastes your biggest cost; too little slows growth.</li>
+        <li><strong>Water that runs out</strong> in the dry season.</li>
+        <li><strong>No bird net</strong> over a pond of small fish.</li>
+        <li><strong>No buyers lined up</strong> before harvest.</li>
+        <li><strong>Starting too big.</strong> One or two ponds teach you more, for less.</li>
+      </ul>
+
+      <h2>What we won't promise</h2>
+      <p>We don't promise a profit, a harvest weight or a survival rate. They depend on your water, feeding, fingerlings and daily care. We'll help you plan, and our assistant can answer questions any time.</p>
+
+      <div class="cta">
+        <p class="lede">Ready to plan your pond?</p>
+        <WaButton tag="guide" message="Hi FishTech, I'm starting fish farming and would like a price for a pond." />
+      </div>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .guide { display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: 1.5rem clamp(2rem, 1rem + 4vw, 5rem); padding-bottom: 6rem; }
+  .guide > .prose, .guide > .planner-wrap { grid-column: 2; }
+  .toc { grid-row: 1 / span 3; position: sticky; top: calc(var(--header-h) + 1.5rem); align-self: start; font-size: var(--step--1); }
+  .toc p { font-weight: 750; color: var(--deep); margin-bottom: 0.6rem; }
+  .toc ol { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.45rem; }
+  .toc a { color: var(--muted); text-decoration: none; }
+  .toc a:hover { color: var(--teal); text-decoration: underline; }
+  .planner-wrap { max-width: 44rem; }
+  .planner-wrap h3 { font-size: var(--step-2); }
+  .photo.wide { aspect-ratio: 4 / 3; }
+  .cta { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--deep); display: grid; gap: 1rem; justify-items: start; }
+  @media (max-width: 860px) {
+    .guide { grid-template-columns: 1fr; }
+    .guide > .prose, .guide > .planner-wrap { grid-column: 1; }
+    .toc { position: static; grid-row: auto; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.25rem; }
+  }
+</style>

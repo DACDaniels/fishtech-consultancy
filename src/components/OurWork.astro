@@ -1,0 +1,49 @@
+---
+import { Picture } from 'astro:assets';
+import walkway from '../assets/photos/douglasdale-walkway-dusk.jpg';
+import linerSunset from '../assets/photos/nyatsime-liner-sunset.jpg';
+import crew from '../assets/photos/nyatsime-liner-crew-4.jpg';
+import nyatsimeDone from '../assets/projects/pond-construction-nyatsime-1.webp';
+import fingerlings from '../assets/photos/fingerlings-under-net-1.jpg';
+import finished from '../assets/photos/pond-finished-1.jpg';
+const items = [
+  { src: walkway, cls: 'a', alt: 'Two lined fish ponds full of water either side of an earth walkway at dusk', cap: 'Twin ponds at dusk, Douglasdale, Bulawayo, October 2025.' },
+  { src: linerSunset, cls: 'b', alt: 'A large pond freshly lined with black liner at sunset', cap: 'Liner laid and ready to fill, Nyatsime, September 2025.' },
+  { src: crew, cls: 'c', alt: 'The crew fitting liner inside a newly dug pond', cap: 'Fitting the liner, Nyatsime.' },
+  { src: fingerlings, cls: 'd', alt: 'Young tilapia swimming in green water under a bird net', cap: 'Fingerlings under a bird net, February 2026.' },
+  { src: nyatsimeDone, cls: 'e', alt: 'Finished lined ponds full of water with bird nets over them', cap: 'Finished ponds with bird nets, Nyatsime.' },
+  { src: finished, cls: 'f', alt: 'A finished lined pond full of water under a blue sky', cap: 'A finished pond, October 2025.' },
+];
+---
+<section class="section work" id="our-work" aria-labelledby="work-title">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="work-title">Our work</h2>
+      <p class="lede">Ponds we have dug, lined and filled for farmers in Zimbabwe. Every photo here is ours.</p>
+    </div>
+    <div class="mosaic">
+      {items.map((it) => (
+        <figure class={`tile ${it.cls}`}>
+          <div class="photo"><Picture src={it.src} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(max-width: 760px) 100vw, 50vw" alt={it.alt} loading="lazy" /></div>
+          <figcaption>{it.cap}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .mosaic { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(1rem, 0.5rem + 1.5vw, 2rem); }
+  .tile { display: flex; flex-direction: column; }
+  .tile .photo { flex: 1; min-height: 0; }
+  .a { grid-column: 1 / span 5; } .a .photo { aspect-ratio: 3 / 4; }
+  .b { grid-column: 6 / span 7; align-self: end; } .b .photo { aspect-ratio: 4 / 3; }
+  .c { grid-column: 1 / span 4; } .c .photo { aspect-ratio: 3 / 4; }
+  .d { grid-column: 5 / span 8; align-self: center; } .d .photo { aspect-ratio: 16 / 10; }
+  .e { grid-column: 1 / span 7; } .e .photo { aspect-ratio: 4 / 3; }
+  .f { grid-column: 8 / span 5; } .f .photo { aspect-ratio: 3 / 4; }
+  @media (max-width: 760px) {
+    .mosaic { grid-template-columns: 1fr; }
+    .tile { grid-column: 1 / -1 !important; }
+    .tile .photo { aspect-ratio: 4 / 3 !important; }
+  }
+</style>

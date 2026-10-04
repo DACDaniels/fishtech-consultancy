@@ -1,0 +1,52 @@
+---
+import { feed } from '../lib/site';
+import { buildMap } from '../lib/map';
+import { bandLabel, usd } from '../lib/pricing';
+interface Props { labels?: string[] }
+const { labels = ['Harare', 'Bulawayo', 'Mutare', 'Gweru', 'Masvingo', 'Victoria Falls', 'Chinhoyi', 'Bindura', 'Kariba', 'Chiredzi', 'Beitbridge', 'Hwange'] } = Astro.props;
+const m = buildMap(feed);
+const harare = m.towns.find((t) => t.place === 'Harare');
+const right = new Set(m.towns.filter((t) => t.x < m.width * 0.55 && t.place !== 'Harare').map((t) => t.place));
+---
+<figure class="map">
+  <svg viewBox={`0 0 ${m.width} ${m.height}`} role="img" aria-labelledby="map-title map-desc">
+    <title id="map-title">Map of Zimbabwe showing the towns we deliver to</title>
+    <desc id="map-desc">Every town on our list, shaded by its delivery and logistics band, measured by road from Harare.</desc>
+    <path d={m.outline} class="land" />
+    {m.towns.map((t) => (
+      <circle cx={t.x} cy={t.y} r={t.place === 'Harare' ? 7 : 5} class={`dot b${t.band + 1}`}><title>{`${t.place}: about ${t.km} km by road, ${usd(m.bands[t.band].price)}`}</title></circle>
+    ))}
+    {harare && <circle cx={harare.x} cy={harare.y} r="13" class="ring" />}
+    {m.towns.filter((t) => labels.includes(t.place)).map((t) => (
+      t.place === 'Harare'
+      ? <text x={t.x + 4} y={t.y - 20} text-anchor="middle" class="lbl strong">{t.place}</text>
+      : <text x={right.has(t.place) ? t.x + 11 : t.x - 11} y={t.y + 4} text-anchor={right.has(t.place) ? 'start' : 'end'} class="lbl">{t.place}</text>
+    ))}
+  </svg>
+  <figcaption>
+    <ul class="legend">
+      {m.bands.map((b, i) => (
+        <li><span class={`key b${i + 1}`}></span><span>{bandLabel(b)}</span><strong class="num" data-price={`band:${i}`}>{usd(b.price)}</strong></li>
+      ))}
+    </ul>
+    <p class="small muted">Delivery and logistics, one charge per order, by road distance from Harare. Town positions are approximate.</p>
+  </figcaption>
+</figure>
+<style>
+  .map { display: grid; gap: 1rem; }
+  .map svg { width: 100%; height: auto; }
+  .land { fill: var(--white); stroke: var(--deep); stroke-width: 1.5; stroke-linejoin: round; }
+  .dot { stroke: var(--white); stroke-width: 1.5; }
+  .b1 { fill: var(--band-1); background: var(--band-1); }
+  .b2 { fill: var(--band-2); background: var(--band-2); }
+  .b3 { fill: var(--band-3); background: var(--band-3); }
+  .b4 { fill: var(--band-4); background: var(--band-4); }
+  .ring { fill: none; stroke: var(--gold); stroke-width: 2.5; }
+  .lbl { font: 600 13px var(--font); fill: var(--ink); paint-order: stroke; stroke: var(--white); stroke-width: 4px; stroke-linejoin: round; }
+  .lbl.strong { font-weight: 800; font-size: 15px; }
+  .legend { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem 1.5rem; }
+  .legend li { display: grid; grid-template-columns: auto 1fr auto; gap: 0.6rem; align-items: center; font-size: var(--step--1); }
+  .key { width: 0.9rem; height: 0.9rem; border-radius: 50%; display: inline-block; }
+  .legend strong { color: var(--teal); }
+  @media (max-width: 520px) { .legend { grid-template-columns: 1fr; } }
+</style>

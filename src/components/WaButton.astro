@@ -1,0 +1,9 @@
+---
+import Icon from './Icon.astro';
+import { wa, HELLO } from '../lib/site';
+interface Props { tag: string; message?: string; label?: string; variant?: 'main' | 'line'; class?: string }
+const { tag, message = HELLO, label = 'Get a price on WhatsApp', variant = 'main', class: cls = '' } = Astro.props;
+---
+<a class={`btn btn-${variant} ${cls}`} href={wa(message, tag)} data-wa-tag={tag} rel="noopener">
+  <Icon name="chat" /><span>{label}</span>
+</a>

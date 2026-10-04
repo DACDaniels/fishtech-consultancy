@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import Calculator from '../components/Calculator.astro';
+import Steps from '../components/Steps.astro';
+import OurWork from '../components/OurWork.astro';
+import CoverageMap from '../components/CoverageMap.astro';
+import DeliveryChecker from '../components/DeliveryChecker.astro';
+import Assistant from '../components/Assistant.astro';
+import Why from '../components/Why.astro';
+import AlsoAvailable from '../components/AlsoAvailable.astro';
+import Faq from '../components/Faq.astro';
+import Channel from '../components/Channel.astro';
+import { feed } from '../lib/site';
+import { pondFrom, usd } from '../lib/pricing';
+import { faqs, faqJsonLd } from '../lib/faq';
+const items = faqs(feed);
+---
+<Base
+  title="FishTech | Fish ponds, fingerlings and feed across Zimbabwe"
+  description={`Lined fish ponds from ${usd(pondFrom(feed))}, bird nets, tilapia fingerlings and feed, delivered across Zimbabwe. Get a price in minutes from our assistant on WhatsApp.`}
+  jsonLd={[faqJsonLd(items)]}
+>
+  <Hero />
+  <Services />
+  <Calculator />
+  <Steps />
+  <OurWork />
+  <section class="section areas" id="areas" aria-labelledby="areas-title">
+    <div class="wrap areas-grid">
+      <div class="stack">
+        <h2 id="areas-title">We work across Zimbabwe</h2>
+        <p class="lede">From Victoria Falls to Chipinge. Delivery and logistics is one charge for your whole order, set by the road distance from Harare.</p>
+        <DeliveryChecker />
+        <p><a href="/areas-we-cover">Every town and its delivery charge</a></p>
+      </div>
+      <CoverageMap />
+    </div>
+  </section>
+  <Assistant />
+  <Why />
+  <AlsoAvailable />
+  <Faq items={items} />
+  <Channel />
+</Base>
+<style>
+  .areas-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 1rem + 4vw, 5rem); align-items: center; }
+  .areas .stack { gap: 1.5rem; }
+  @media (max-width: 860px) { .areas-grid { grid-template-columns: 1fr; } }
+</style>

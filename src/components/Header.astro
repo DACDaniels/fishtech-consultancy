@@ -1,0 +1,36 @@
+---
+import Icon from './Icon.astro';
+import { wa, HELLO } from '../lib/site';
+const path = Astro.url.pathname.replace(/\.html$/, '');
+const links = [
+  { href: '/pond-prices', label: 'Pond prices' },
+  { href: '/start-fish-farming-zimbabwe', label: 'Start fish farming' },
+  { href: '/areas-we-cover', label: 'Areas we cover' },
+  { href: '/#our-work', label: 'Our work' },
+];
+---
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="FishTech, home">
+      <img src="/brand/fishtech-logo.svg" alt="FishTech, Aquaculture Services" width="383" height="90" />
+    </a>
+    <nav class="nav" aria-label="Main">
+      {links.map((l) => <a href={l.href} aria-current={path === l.href ? 'page' : undefined}>{l.label}</a>)}
+      <a class="btn btn-main" href={wa(HELLO, 'header')} data-wa-tag="header"><Icon name="chat" /><span>WhatsApp us</span></a>
+    </nav>
+    <details class="menu">
+      <summary aria-label="Menu"><Icon name="menu" /></summary>
+      <div class="menu-panel">
+        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+        <a class="btn btn-main" href={wa(HELLO, 'menu')} data-wa-tag="menu"><Icon name="chat" /><span>WhatsApp us</span></a>
+      </div>
+    </details>
+  </div>
+</header>
+<script>
+  const h = document.querySelector<HTMLElement>('[data-header]');
+  const onScroll = () => h?.toggleAttribute('data-scrolled', window.scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  document.querySelectorAll<HTMLAnchorElement>('.menu-panel a').forEach((a) =>
+    a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')));
+</script>

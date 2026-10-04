@@ -1,0 +1,439 @@
+{
+  "currency": "USD",
+  "source": "docs/finance/pricing-policy.md",
+  "ponds": {
+    "depth_m": 1.5,
+    "note": "Pond excavation and HDPE liner, fresh ground. Other sizes on request.",
+    "prices": [
+      {
+        "size": "10 x 10 m",
+        "width_m": 10,
+        "length_m": 10,
+        "micron": 250,
+        "price": 430
+      },
+      {
+        "size": "10 x 10 m",
+        "width_m": 10,
+        "length_m": 10,
+        "micron": 300,
+        "price": 490
+      },
+      {
+        "size": "10 x 10 m",
+        "width_m": 10,
+        "length_m": 10,
+        "micron": 400,
+        "price": 550
+      },
+      {
+        "size": "10 x 20 m",
+        "width_m": 10,
+        "length_m": 20,
+        "micron": 250,
+        "price": 700
+      },
+      {
+        "size": "10 x 20 m",
+        "width_m": 10,
+        "length_m": 20,
+        "micron": 300,
+        "price": 850
+      },
+      {
+        "size": "10 x 20 m",
+        "width_m": 10,
+        "length_m": 20,
+        "micron": 400,
+        "price": 950
+      },
+      {
+        "size": "20 x 20 m",
+        "width_m": 20,
+        "length_m": 20,
+        "micron": 250,
+        "price": 1100
+      },
+      {
+        "size": "20 x 20 m",
+        "width_m": 20,
+        "length_m": 20,
+        "micron": 300,
+        "price": 1300
+      },
+      {
+        "size": "20 x 20 m",
+        "width_m": 20,
+        "length_m": 20,
+        "micron": 400,
+        "price": 1400
+      },
+      {
+        "size": "20 x 30 m",
+        "width_m": 20,
+        "length_m": 30,
+        "micron": 250,
+        "price": 1650
+      },
+      {
+        "size": "20 x 30 m",
+        "width_m": 20,
+        "length_m": 30,
+        "micron": 300,
+        "price": 2000
+      },
+      {
+        "size": "20 x 30 m",
+        "width_m": 20,
+        "length_m": 30,
+        "micron": 400,
+        "price": 2200
+      }
+    ]
+  },
+  "bird_nets": [
+    {
+      "size": "10 x 10 m",
+      "price": 70
+    },
+    {
+      "size": "10 x 20 m",
+      "price": 120
+    },
+    {
+      "size": "20 x 20 m",
+      "price": 210
+    },
+    {
+      "size": "20 x 30 m",
+      "price": 280
+    }
+  ],
+  "fingerlings": {
+    "per": 1500,
+    "price": 115
+  },
+  "feed": [
+    {
+      "product": "Starter 1",
+      "bag_kg": 10,
+      "price": 23
+    },
+    {
+      "product": "Starter 2",
+      "bag_kg": 10,
+      "price": 23
+    },
+    {
+      "product": "Starter 3",
+      "bag_kg": 10,
+      "price": 23
+    },
+    {
+      "product": "Juvenile 1",
+      "bag_kg": 25,
+      "price": 41
+    },
+    {
+      "product": "Juvenile 2",
+      "bag_kg": 25,
+      "price": 32
+    },
+    {
+      "product": "Grower",
+      "bag_kg": 25,
+      "price": 30
+    }
+  ],
+  "delivery": {
+    "name": "Delivery and logistics",
+    "per": "order",
+    "measured_from": "Harare city centre, by road",
+    "bands": [
+      {
+        "from_km": 0,
+        "to_km": 50,
+        "price": 15
+      },
+      {
+        "from_km": 50,
+        "to_km": 150,
+        "price": 25
+      },
+      {
+        "from_km": 150,
+        "to_km": 300,
+        "price": 35
+      },
+      {
+        "from_km": 300,
+        "to_km": null,
+        "price": 45
+      }
+    ]
+  },
+  "site_visit": {
+    "price": 25,
+    "note": "Credited in full against the job if you go ahead."
+  },
+  "towns": [
+    {
+      "place": "Harare",
+      "km": 0
+    },
+    {
+      "place": "Epworth",
+      "km": 15
+    },
+    {
+      "place": "Ruwa",
+      "km": 22
+    },
+    {
+      "place": "Chitungwiza",
+      "km": 25
+    },
+    {
+      "place": "Arcturus",
+      "km": 30
+    },
+    {
+      "place": "Domboshava",
+      "km": 30
+    },
+    {
+      "place": "Melfort",
+      "km": 30
+    },
+    {
+      "place": "Goromonzi",
+      "km": 35
+    },
+    {
+      "place": "Lake Chivero",
+      "km": 35
+    },
+    {
+      "place": "Mazowe",
+      "km": 40
+    },
+    {
+      "place": "Norton",
+      "km": 40
+    },
+    {
+      "place": "Beatrice",
+      "km": 60
+    },
+    {
+      "place": "Glendale",
+      "km": 60
+    },
+    {
+      "place": "Concession",
+      "km": 70
+    },
+    {
+      "place": "Darwendale",
+      "km": 70
+    },
+    {
+      "place": "Marondera",
+      "km": 72
+    },
+    {
+      "place": "Murombedzi",
+      "km": 80
+    },
+    {
+      "place": "Selous",
+      "km": 80
+    },
+    {
+      "place": "Murehwa",
+      "km": 85
+    },
+    {
+      "place": "Bindura",
+      "km": 88
+    },
+    {
+      "place": "Banket",
+      "km": 90
+    },
+    {
+      "place": "Shamva",
+      "km": 90
+    },
+    {
+      "place": "Featherstone",
+      "km": 95
+    },
+    {
+      "place": "Mvurwi",
+      "km": 100
+    },
+    {
+      "place": "Macheke",
+      "km": 105
+    },
+    {
+      "place": "Mutorashanga",
+      "km": 105
+    },
+    {
+      "place": "Chegutu",
+      "km": 107
+    },
+    {
+      "place": "Chinhoyi",
+      "km": 116
+    },
+    {
+      "place": "Raffingora",
+      "km": 125
+    },
+    {
+      "place": "Wedza",
+      "km": 125
+    },
+    {
+      "place": "Headlands",
+      "km": 140
+    },
+    {
+      "place": "Kadoma",
+      "km": 141
+    },
+    {
+      "place": "Chivhu",
+      "km": 142
+    },
+    {
+      "place": "Mutoko",
+      "km": 143
+    },
+    {
+      "place": "Rusape",
+      "km": 170
+    },
+    {
+      "place": "Mhangura",
+      "km": 185
+    },
+    {
+      "place": "Karoi",
+      "km": 205
+    },
+    {
+      "place": "Kwekwe",
+      "km": 213
+    },
+    {
+      "place": "Murambinda",
+      "km": 220
+    },
+    {
+      "place": "Nyamapanda",
+      "km": 230
+    },
+    {
+      "place": "Gutu",
+      "km": 235
+    },
+    {
+      "place": "Mutare",
+      "km": 263
+    },
+    {
+      "place": "Nyanga",
+      "km": 268
+    },
+    {
+      "place": "Gweru",
+      "km": 275
+    },
+    {
+      "place": "Masvingo",
+      "km": 292
+    },
+    {
+      "place": "Shurugwi",
+      "km": 305
+    },
+    {
+      "place": "Chirundu",
+      "km": 350
+    },
+    {
+      "place": "Gokwe",
+      "km": 360
+    },
+    {
+      "place": "Kariba",
+      "km": 365
+    },
+    {
+      "place": "Bikita",
+      "km": 370
+    },
+    {
+      "place": "Zvishavane",
+      "km": 375
+    },
+    {
+      "place": "Zaka",
+      "km": 380
+    },
+    {
+      "place": "Chimanimani",
+      "km": 410
+    },
+    {
+      "place": "Triangle",
+      "km": 425
+    },
+    {
+      "place": "Chipinge",
+      "km": 430
+    },
+    {
+      "place": "Bulawayo",
+      "km": 439
+    },
+    {
+      "place": "Chiredzi",
+      "km": 440
+    },
+    {
+      "place": "Mwenezi",
+      "km": 445
+    },
+    {
+      "place": "Plumtree",
+      "km": 540
+    },
+    {
+      "place": "Gwanda",
+      "km": 565
+    },
+    {
+      "place": "Beitbridge",
+      "km": 580
+    },
+    {
+      "place": "Lupane",
+      "km": 610
+    },
+    {
+      "place": "Hwange",
+      "km": 770
+    },
+    {
+      "place": "Victoria Falls",
+      "km": 875
+    }
+  ],
+  "whatsapp": "263711626305",
+  "fetched_at": "2026-10-04T18:39:36.975Z"
+}

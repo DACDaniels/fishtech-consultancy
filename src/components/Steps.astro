@@ -1,0 +1,44 @@
+---
+import { Picture } from 'astro:assets';
+import crew from '../assets/photos/nyatsime-liner-crew-1.jpg';
+import Price from './Price.astro';
+---
+<section class="section steps-section" id="how-it-works" aria-labelledby="steps-title">
+  <div class="wrap steps-grid">
+    <figure class="photo-col">
+      <div class="photo"><Picture src={crew} formats={['avif', 'webp']} widths={[480, 800, 1100]} sizes="(max-width: 860px) 100vw, 40vw" alt="A FishTech crew member standing in a pond as the black liner is laid out" loading="lazy" /></div>
+      <figcaption>Laying liner at Nyatsime, September 2025.</figcaption>
+    </figure>
+    <div>
+      <div class="section-head">
+        <h2 id="steps-title">How a job runs</h2>
+        <p class="lede">From your first message to fish in the water.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Ask on WhatsApp</h3><p>Tell our assistant the pond size you want and where your farm is. It sends a written quotation within minutes, day or night.</p></li>
+        <li><h3>Site visit</h3><p>We check your ground and your water before building. The visit is <Price k="site-visit" />, taken off the job if you go ahead.</p></li>
+        <li><h3>Build</h3><p>We dig the pond to 1.5 m, then lay and fit the liner. Half the price is paid before we start and half when the pond is finished.</p></li>
+        <li><h3>Stock</h3><p>We deliver your fingerlings and put up the bird net, if you've ordered them.</p></li>
+        <li><h3>Feed</h3><p>We bring the right feed for each stage as your fish grow, so you're never storing bags for months.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+<style>
+  .steps-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 1rem + 4vw, 6rem); align-items: start; }
+  .photo-col { position: sticky; top: calc(var(--header-h) + 1.5rem); }
+  .photo-col .photo { aspect-ratio: 4 / 5; }
+  .steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; }
+  .steps li { counter-increment: step; display: grid; grid-template-columns: 3.5rem 1fr; gap: 0.25rem 1rem; padding-block: 1.4rem; border-top: 1px solid var(--line); }
+  .steps li::before {
+    content: counter(step); grid-row: span 2; font-weight: 800; font-stretch: 75%; font-size: var(--step-4); line-height: 1; color: var(--teal);
+    font-variant-numeric: tabular-nums;
+  }
+  .steps h3 { font-size: var(--step-2); }
+  .steps p { color: var(--muted); max-width: 34em; }
+  @media (max-width: 860px) {
+    .steps-grid { grid-template-columns: 1fr; }
+    .photo-col { position: static; }
+    .photo-col .photo { aspect-ratio: 4 / 3; }
+  }
+</style>
