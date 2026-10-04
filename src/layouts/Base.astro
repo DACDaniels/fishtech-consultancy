@@ -4,10 +4,11 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
+import Intro from '../components/Intro.astro';
 import { feed, wa, HELLO, SITE } from '../lib/site';
 
-interface Props { title: string; description: string; image?: string; noFloat?: boolean; jsonLd?: Record<string, unknown>[] }
-const { title, description, image = '/og/fishtech.jpg', noFloat = false, jsonLd = [] } = Astro.props;
+interface Props { title: string; description: string; image?: string; noFloat?: boolean; jsonLd?: Record<string, unknown>[]; headerTone?: 'light' | 'dark' }
+const { title, description, image = '/og/fishtech.jpg', noFloat = false, jsonLd = [], headerTone = 'light' } = Astro.props;
 const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'), SITE).href;
 const business = {
   '@context': 'https://schema.org',
@@ -28,6 +29,20 @@ const snapshot = JSON.stringify(feed);
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        try {
+          var quiet = matchMedia('(prefers-reduced-motion: reduce)').matches || /bot|crawl|spider|lighthouse|headless/i.test(navigator.userAgent);
+          if (!quiet && !sessionStorage.getItem('ft-intro')) {
+            d.classList.add('intro');
+            sessionStorage.setItem('ft-intro', '1');
+            setTimeout(function () { d.classList.remove('intro', 'intro-out'); d.classList.add('intro-done'); }, 3200);
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -50,8 +65,9 @@ const snapshot = JSON.stringify(feed);
     <script defer src="/_vercel/insights/script.js"></script>
   </head>
   <body>
+    <Intro />
     <a class="skip" href="#main">Skip to content</a>
-    <Header />
+    <Header tone={headerTone} />
     <main id="main">
       <slot />
     </main>
@@ -64,6 +80,11 @@ const snapshot = JSON.stringify(feed);
     <script type="application/json" id="feed-snapshot" set:html={snapshot} />
     <script>
       import '../scripts/live-prices';
+      // Scroll reveals: add .in when an element comes into view.
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+      document.querySelectorAll('[data-reveal], [data-reveal-map]').forEach((el) => io.observe(el));
       // Show the floating button once the first call to action has scrolled away.
       const float = document.querySelector<HTMLElement>('[data-float]');
       const first = document.querySelector('[data-first-cta]');

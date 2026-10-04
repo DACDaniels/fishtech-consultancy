@@ -112,3 +112,17 @@ test('planner scales fingerlings and feed by pond area', async ({ page }) => {
   await expect(page.locator('[data-planner] [data-fish]')).toHaveText('6,000');
   await expect(page.locator('[data-planner] [data-kg]')).toHaveText('1,880 kg');
 });
+
+test.describe('with motion', () => {
+  test.use({ reducedMotion: 'no-preference' });
+  test('the opening animation plays once, then gets out of the way', async ({ page }) => {
+    await noBlockedFeed(page);
+    await page.goto('/');
+    await expect(page.locator('html')).toHaveClass(/intro/);
+    await expect(page.locator('html')).toHaveClass(/intro-done/, { timeout: 4000 });
+    await expect(page.locator('[data-intro]')).toBeHidden();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await page.goto('/pond-prices');
+    await expect(page.locator('html')).not.toHaveClass(/(^|\s)intro(\s|$)/);
+  });
+});

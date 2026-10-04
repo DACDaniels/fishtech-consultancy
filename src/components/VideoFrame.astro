@@ -1,0 +1,50 @@
+---
+// The Douglasdale clip in a tall frame. Plays by itself, muted and looping, when it
+// scrolls into view on a good connection. On slow or data-saving connections, or for
+// reduced motion, the still frame stays and a play button loads it on request.
+import { getImage } from 'astro:assets';
+import poster from '../assets/photos/hero-poster.jpg';
+import Icon from './Icon.astro';
+const posterWebp = await getImage({ src: poster, format: 'webp', width: 720, quality: 72 });
+interface Props { caption: string; label: string }
+const { caption, label } = Astro.props;
+---
+<figure class="vframe" data-vframe>
+  <div class="media">
+    <video muted loop playsinline preload="none" poster={posterWebp.src} aria-label={label} data-src="/video/hero-douglasdale.mp4"></video>
+    <button class="vbtn" type="button" data-vbtn data-paused aria-label="Play video">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor" /><path class="i-play" d="M8 5.5v13l10.5-6.5Z" fill="currentColor" /></svg>
+    </button>
+    <p class="place"><Icon name="pin" /> {caption}</p>
+  </div>
+</figure>
+<style>
+  .media { position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 9 / 14; background: var(--deep); box-shadow: 0 30px 60px -30px rgba(6, 58, 67, 0.55); }
+  video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .vbtn { position: absolute; right: 1rem; bottom: 1rem; width: 3rem; height: 3rem; border-radius: 50%; border: 0; background: rgba(6, 58, 67, 0.75); color: #fff; display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(6px); }
+  .vbtn svg { width: 1.2rem; height: 1.2rem; }
+  .vbtn .i-play { display: none; }
+  .vbtn[data-paused] .i-play { display: block; }
+  .vbtn[data-paused] .i-pause { display: none; }
+  .place { position: absolute; left: 1rem; bottom: 1.25rem; display: inline-flex; gap: 0.35rem; align-items: center; background: rgba(6, 58, 67, 0.75); color: #fff; font-size: var(--step--1); font-weight: 600; padding: 0.35rem 0.75rem 0.35rem 0.55rem; border-radius: 999px; backdrop-filter: blur(6px); }
+  .place :global(svg) { width: 1rem; height: 1rem; }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-vframe]').forEach((root) => {
+    const video = root.querySelector('video')!;
+    const btn = root.querySelector<HTMLButtonElement>('[data-vbtn]')!;
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    const slow = !!conn && (conn.saveData || ['slow-2g', '2g', '3g'].includes(conn.effectiveType || ''));
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let userPaused = false;
+    const set = (on: boolean) => { btn.toggleAttribute('data-paused', !on); btn.setAttribute('aria-label', on ? 'Pause video' : 'Play video'); };
+    const play = () => { if (!video.src) video.src = video.dataset.src || ''; video.play().then(() => set(true)).catch(() => set(false)); };
+    btn.addEventListener('click', () => { if (video.paused) { userPaused = false; play(); } else { userPaused = true; video.pause(); set(false); } });
+    if (!slow && !still) {
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting && !userPaused) play();
+        else if (!e.isIntersecting && !video.paused) { video.pause(); set(false); }
+      }, { threshold: 0.35 }).observe(root);
+    }
+  });
+</script>

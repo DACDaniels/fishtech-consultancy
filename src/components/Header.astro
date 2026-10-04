@@ -1,6 +1,8 @@
 ---
 import Icon from './Icon.astro';
 import { wa, HELLO } from '../lib/site';
+interface Props { tone?: 'light' | 'dark' }
+const { tone = 'light' } = Astro.props;
 const path = Astro.url.pathname.replace(/\.html$/, '');
 const links = [
   { href: '/pond-prices', label: 'Pond prices' },
@@ -9,10 +11,11 @@ const links = [
   { href: '/#our-work', label: 'Our work' },
 ];
 ---
-<header class="site-header" data-header>
+<header class="site-header" data-header data-tone={tone}>
   <div class="wrap">
     <a class="brand" href="/" aria-label="FishTech, home">
-      <img src="/brand/fishtech-logo.svg" alt="FishTech, Aquaculture Services" width="383" height="90" />
+      <img class="logo-light" src="/brand/fishtech-logo.svg" alt="FishTech, Aquaculture Services" width="383" height="90" />
+      <img class="logo-dark" src="/brand/fishtech-logo-white.svg" alt="" width="383" height="90" aria-hidden="true" />
     </a>
     <nav class="nav" aria-label="Main">
       {links.map((l) => <a href={l.href} aria-current={path === l.href ? 'page' : undefined}>{l.label}</a>)}
@@ -29,7 +32,7 @@ const links = [
 </header>
 <script>
   const h = document.querySelector<HTMLElement>('[data-header]');
-  const onScroll = () => h?.toggleAttribute('data-scrolled', window.scrollY > 8);
+  const onScroll = () => h?.toggleAttribute('data-scrolled', window.scrollY > (h?.dataset.tone === 'dark' ? window.innerHeight * 0.6 : 8));
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
   document.querySelectorAll<HTMLAnchorElement>('.menu-panel a').forEach((a) =>
     a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')));
