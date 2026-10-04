@@ -59,7 +59,7 @@ const posterWebp = await getImage({ src: poster, format: 'webp', width: 720, qua
   }
   .hero-place :global(svg) { width: 1rem; height: 1rem; }
   .hero-pause {
-    position: absolute; right: 1rem; bottom: 1rem; width: 2.5rem; height: 2.5rem; border-radius: 50%; border: 0;
+    position: absolute; right: 1rem; bottom: 1rem; width: 2.75rem; height: 2.75rem; border-radius: 50%; border: 0;
     background: rgba(6, 58, 67, 0.72); color: var(--white); display: grid; place-items: center; cursor: pointer;
   }
   .hero-pause svg { width: 1.1rem; height: 1.1rem; }
@@ -93,21 +93,34 @@ const posterWebp = await getImage({ src: poster, format: 'webp', width: 720, qua
 </style>
 
 <script>
+  // The video plays by itself on a good connection. On slow or data-saving
+  // connections, and for people who prefer less motion, the still frame stays
+  // and a play button lets the visitor choose to load it (about 2 MB).
   const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-  const pause = document.querySelector<HTMLButtonElement>('[data-hero-pause]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-hero-pause]');
   const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
   const slow = !!conn && (conn.saveData || ['slow-2g', '2g', '3g'].includes(conn.effectiveType || ''));
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (video && !slow && !still) {
-    const start = () => {
-      video.src = video.dataset.src || '';
-      video.play().then(() => { if (pause) pause.hidden = false; }).catch(() => {});
-    };
-    if (document.readyState === 'complete') setTimeout(start, 300);
-    else addEventListener('load', () => setTimeout(start, 300), { once: true });
-    pause?.addEventListener('click', () => {
-      if (video.paused) { video.play(); pause.removeAttribute('data-paused'); pause.setAttribute('aria-label', 'Pause video'); }
-      else { video.pause(); pause.setAttribute('data-paused', ''); pause.setAttribute('aria-label', 'Play video'); }
+  const setPlaying = (on: boolean) => {
+    if (!btn) return;
+    btn.toggleAttribute('data-paused', !on);
+    btn.setAttribute('aria-label', on ? 'Pause video' : 'Play video');
+  };
+  const start = () => {
+    if (!video) return;
+    if (!video.src) video.src = video.dataset.src || '';
+    video.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+  };
+  if (video && btn) {
+    btn.hidden = false;
+    setPlaying(false);
+    btn.addEventListener('click', () => {
+      if (video.paused) start();
+      else { video.pause(); setPlaying(false); }
     });
+    if (!slow && !still) {
+      if (document.readyState === 'complete') setTimeout(start, 300);
+      else addEventListener('load', () => setTimeout(start, 300), { once: true });
+    }
   }
 </script>
