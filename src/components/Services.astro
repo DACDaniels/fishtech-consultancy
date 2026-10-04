@@ -5,38 +5,38 @@ const per = feed.fingerlings.per.toLocaleString('en-US');
 ---
 <section class="section" id="what-we-do" aria-labelledby="services-title">
   <div class="wrap">
-    <div class="section-head" data-reveal>
+    <div class="section-head">
       <p class="live"><span class="ldot"></span>Prices read live from our price list</p>
-      <h2 id="services-title">What we do</h2>
-      <p class="lede">The basics of fish farming, done properly. Every price here comes from our published price list, and delivery is one charge per order.</p>
+      <h2 data-motion="lines" id="services-title">What we do</h2>
+      <p class="lede" data-motion="fade">The basics of fish farming, done properly. Every price here comes from our published price list, and delivery is one charge per order.</p>
     </div>
-    <ul class="services" role="list">
-      <li data-reveal style="--d:0ms">
+    <ul class="services" role="list" data-motion="list">
+      <li>
         <h3>Fish ponds, dug and lined</h3>
         <p>We dig your pond to 1.5 m and fit HDPE plastic liner in 250, 300 or 400 micron. Standard sizes run from 10 × 10 m to 20 × 30 m, and we build other sizes on request.</p>
-        <p class="price-tag">from <Price k="pond-from" /></p>
+        <p class="price-tag">from <Price k="pond-from" count /></p>
       </li>
-      <li data-reveal style="--d:60ms">
+      <li>
         <h3>Bird nets</h3>
         <p>Birds eat small fish. We put a net over the pond so they can't reach them.</p>
-        <p class="price-tag">from <Price k="net-from" /></p>
+        <p class="price-tag">from <Price k="net-from" count /></p>
       </li>
-      <li data-reveal style="--d:120ms">
+      <li>
         <h3>Tilapia fingerlings</h3>
         <p>Sold in lots of {per}, the right number for one 10 × 10 m pond, and delivered with your order.</p>
-        <p class="price-tag"><Price k="fingerlings" /> <span>per {per}</span></p>
+        <p class="price-tag"><Price k="fingerlings" count /> <span>per {per}</span></p>
       </li>
-      <li data-reveal style="--d:180ms">
+      <li>
         <h3>Fish feed</h3>
         <p>Starter, juvenile and grower feed by the bag. You buy each stage as your fish grow into it, so you don't have to store feed for months.</p>
-        <p class="price-tag">from <Price k="feed-from" /> <span>a bag</span></p>
+        <p class="price-tag">from <Price k="feed-from" count /> <span>a bag</span></p>
       </li>
-      <li data-reveal style="--d:240ms">
+      <li>
         <h3>Site visits</h3>
         <p>Before we build, we check your ground and water. If you go ahead, the visit fee comes off the price of the job.</p>
-        <p class="price-tag"><Price k="site-visit" /></p>
+        <p class="price-tag"><Price k="site-visit" count /></p>
       </li>
-      <li data-reveal style="--d:300ms">
+      <li>
         <h3>Thicker liners and pond balancing</h3>
         <p>Liner up to 1 mm thick, and balancing work on existing ponds.</p>
         <p class="price-tag ask">Ask for a price</p>

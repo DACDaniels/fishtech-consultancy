@@ -9,19 +9,19 @@ const standards = [
   ['Straight answers', "We don't promise harvest weights, growth or survival. They depend on water, feeding and care, and we'll help you plan for them."],
 ];
 ---
-<figure class="band" data-reveal="wipe">
+<figure class="band" data-motion="parallax">
   <Picture src={sunrise} formats={['avif', 'webp']} widths={[800, 1400, 2200]} sizes="100vw" alt="A newly lined pond with a little water in it at sunrise" loading="lazy" />
   <figcaption>Sunrise over a newly lined pond, Kwekwe, September 2025.</figcaption>
 </figure>
 <section class="section why" id="why" aria-labelledby="why-title">
   <div class="wrap why-grid">
     <div class="stack">
-      <h2 id="why-title">Why FishTech</h2>
+      <h2 data-motion="lines" id="why-title">Why FishTech</h2>
       <p class="lede">Fish farming in Zimbabwe is still mostly done by hand, and feeding is often guesswork. FishTech is a Zimbabwean aquaculture and technology company working to make fish farming more efficient and profitable through digital tools, starting with the basics done properly.</p>
       <p class="muted small">Our work is aligned with Vision 2030 and the National Development Strategy 2 on food security and innovation, and with the Sustainable Development Goals on zero hunger, decent work, industry and innovation, responsible production, and life below water.</p>
     </div>
-    <dl class="standards">
-      {standards.map(([t, d], i) => (<div data-reveal style={`--d:${i * 70}ms`}><dt>{t}</dt><dd>{d}</dd></div>))}
+    <dl class="standards" data-motion="list">
+      {standards.map(([t, d]) => (<div><dt>{t}</dt><dd>{d}</dd></div>))}
     </dl>
   </div>
 </section>

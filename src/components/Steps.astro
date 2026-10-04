@@ -4,21 +4,21 @@ import Price from './Price.astro';
 ---
 <section class="section steps-section" id="how-it-works" aria-labelledby="steps-title">
   <div class="wrap steps-grid">
-    <div class="photo-col" data-reveal>
+    <div class="photo-col" data-motion="fade">
       <VideoFrame caption="Douglasdale, Bulawayo" label="Video: newly lined fish ponds filled with water, Douglasdale, Bulawayo, October 2025" />
     </div>
     <div>
       <div class="section-head">
-        <h2 id="steps-title">How a job runs</h2>
+        <h2 data-motion="lines" id="steps-title">How a job runs</h2>
         <p class="lede">From your first message to fish in the water.</p>
       </div>
-      <ol class="steps">
-        <li data-reveal><h3>Ask on WhatsApp</h3><p>Tell our assistant the pond size you want and where your farm is. It replies within minutes, day or night, with a written quotation. Our team checks larger jobs first.</p></li>
-        <li data-reveal><h3>Site visit</h3><p>We check your ground and your water before building. The visit is <Price k="site-visit" />, taken off the job if you go ahead.</p></li>
-        <li data-reveal><h3>Build</h3><p>We dig the pond to 1.5 m, then lay and fit the liner. Half the price is paid before we start and half when the pond is finished.</p></li>
-        <li data-reveal><h3>Stock</h3><p>We deliver your fingerlings and put up the bird net, if you've ordered them.</p></li>
-        <li data-reveal><h3>Feed</h3><p>Order the right feed for each stage as your fish grow, and we deliver it.</p></li>
-      </ol>
+      <div class="steps-track" data-motion="progress"><span class="rail" aria-hidden="true"><span class="bar" data-progress-bar></span></span><ol class="steps">
+        <li data-step><h3>Ask on WhatsApp</h3><p>Tell our assistant the pond size you want and where your farm is. It replies within minutes, day or night, with a written quotation. Our team checks larger jobs first.</p></li>
+        <li data-step><h3>Site visit</h3><p>We check your ground and your water before building. The visit is <Price k="site-visit" />, taken off the job if you go ahead.</p></li>
+        <li data-step><h3>Build</h3><p>We dig the pond to 1.5 m, then lay and fit the liner. Half the price is paid before we start and half when the pond is finished.</p></li>
+        <li data-step><h3>Stock</h3><p>We deliver your fingerlings and put up the bird net, if you've ordered them.</p></li>
+        <li data-step><h3>Feed</h3><p>Order the right feed for each stage as your fish grow, and we deliver it.</p></li>
+      </ol></div>
     </div>
   </div>
 </section>
@@ -27,6 +27,13 @@ import Price from './Price.astro';
   .photo-col { position: sticky; top: calc(var(--header-h) + 1.5rem); }
   .photo-col { max-width: 26rem; }
   .steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; }
+  .steps-track { position: relative; }
+  .rail { position: absolute; left: 1.05rem; top: 1.6rem; bottom: 1.6rem; width: 2px; background: var(--line); }
+  .bar { position: absolute; inset: 0; background: var(--teal); transform-origin: top; }
+  .steps li::before { transition: color 300ms, transform 300ms var(--ease-out); position: relative; z-index: 1; background: var(--mist); }
+  .steps li.is-active::before { color: var(--gold); transform: scale(1.12); }
+  .steps li h3 { transition: color 300ms; }
+  .steps li.is-active h3 { color: var(--teal); }
   .steps li { counter-increment: step; display: grid; grid-template-columns: 3.5rem 1fr; gap: 0.25rem 1rem; padding-block: 1.4rem; border-top: 1px solid var(--line); }
   .steps li::before {
     content: counter(step); grid-row: span 2; font-weight: 800; font-stretch: 75%; font-size: var(--step-4); line-height: 1; color: var(--teal);
