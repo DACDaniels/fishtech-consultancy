@@ -3,7 +3,7 @@
   "source": "docs/finance/pricing-policy.md",
   "ponds": {
     "depth_m": 1.5,
-    "note": "Pond excavation and HDPE liner, fresh ground. Other sizes on request.",
+    "note": "Pond excavation and HDPE dam liner, fresh ground. Other sizes on request.",
     "prices": [
       {
         "size": "10 x 10 m",
@@ -153,27 +153,27 @@
       {
         "from_km": 0,
         "to_km": 50,
-        "price": 15
+        "price": 20
       },
       {
         "from_km": 50,
         "to_km": 150,
-        "price": 25
+        "price": 30
       },
       {
         "from_km": 150,
         "to_km": 300,
-        "price": 35
+        "price": 40
       },
       {
         "from_km": 300,
         "to_km": null,
-        "price": 45
+        "price": 50
       }
     ]
   },
   "site_visit": {
-    "price": 25,
+    "price": 50,
     "note": "Credited in full against the job if you go ahead."
   },
   "towns": [
@@ -435,5 +435,5 @@
     }
   ],
   "whatsapp": "263711626305",
-  "fetched_at": "2026-10-05T06:58:11.462Z"
+  "fetched_at": "2026-10-05T07:24:20.433Z"
 }
