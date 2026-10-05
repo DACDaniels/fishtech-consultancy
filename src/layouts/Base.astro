@@ -33,12 +33,12 @@ const snapshot = JSON.stringify(feed);
       (function () {
         var d = document.documentElement;
         d.classList.add('js');
-        // Palette comparison for the preview: ?palette=a or ?palette=b, remembered for the visit.
+        // Palette comparison for the preview: ?palette=a, ?palette=b or ?palette=c, remembered for the visit.
         try {
           var q = new URLSearchParams(location.search).get('palette');
-          if (q === 'a' || q === 'b') sessionStorage.setItem('ft-palette', q);
+          if (q === 'a' || q === 'b' || q === 'c') sessionStorage.setItem('ft-palette', q);
           var pal = sessionStorage.getItem('ft-palette');
-          if (pal === 'b') d.setAttribute('data-palette', 'b');
+          if (pal === 'b' || pal === 'c') d.setAttribute('data-palette', pal);
         } catch (e) {}
         if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
           d.classList.add('motion');
