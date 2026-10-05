@@ -7,13 +7,13 @@ const year = new Date().getFullYear();
     <div class="grid">
       <div class="stack">
         <img src="/brand/fishtech-logo-white.svg" alt="FishTech, Aquaculture Services" width="383" height="90" style="height:3.2rem;width:auto" />
-        <p>Fish ponds, bird nets, tilapia fingerlings and feed, across Zimbabwe. Based near Harare.</p>
+        <p>Fish ponds, bird and predator nets, tilapia fingerlings and feed, across Zimbabwe. Based near Harare.</p>
       </div>
       <div>
         <h3>Get a price</h3>
         <ul>
           <li><a href={wa(HELLO, 'footer')} data-wa-tag="footer">WhatsApp {PHONE}</a></li>
-          <li>Our assistant answers any time</li>
+          <li>Open 24/7 on WhatsApp</li>
           <li><a href={CHANNEL} rel="noopener">Follow our WhatsApp channel</a></li>
         </ul>
       </div>
@@ -35,8 +35,16 @@ const year = new Date().getFullYear();
       </div>
     </div>
     <div class="base">
-      <span>© {year} FishTech</span>
+      <span class="left">© {year} FishTech <span class="credit">Built by <b>Daniel Anesu Chadambuka</b></span></span>
       <span>Prices in US dollars, from our published price list.</span>
     </div>
   </div>
 </footer>
+
+<style>
+  .left { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; }
+  .credit { display: inline-flex; align-items: center; gap: 0.45rem; letter-spacing: 0.01em; }
+  .credit::before { content: ''; width: 1.1rem; height: 1px; background: linear-gradient(90deg, transparent, var(--glow)); }
+  .credit b { font-weight: 650; color: #ffffff; background: linear-gradient(90deg, #ffffff, var(--glow)) left bottom / 0 1px no-repeat; transition: background-size 0.5s ease; padding-bottom: 1px; }
+  .credit:hover b { background-size: 100% 1px; }
+</style>

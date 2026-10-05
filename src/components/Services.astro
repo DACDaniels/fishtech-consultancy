@@ -13,12 +13,12 @@ const per = feed.fingerlings.per.toLocaleString('en-US');
     <ul class="services" role="list" data-motion="list">
       <li>
         <h3>Fish ponds, dug and lined</h3>
-        <p>We dig your pond to 1.5 m and fit HDPE plastic liner in 250, 300 or 400 micron. Standard sizes run from 10 × 10 m to 20 × 30 m, and we build other sizes on request.</p>
+        <p>We dig your pond to 1.5 m and fit HDPE dam liner in 250, 300 or 400 micron. Standard sizes run from 10 × 10 m to 20 × 30 m, and we build other sizes on request.</p>
         <p class="price-tag">from <Price k="pond-from" count /></p>
       </li>
       <li>
-        <h3>Bird nets</h3>
-        <p>Birds eat small fish. We put a net over the pond so they can't reach them.</p>
+        <h3>Bird / Predator Nets</h3>
+        <p>Birds and other predators eat fish. We put a net over the pond so they can't reach them.</p>
         <p class="price-tag">from <Price k="net-from" count /></p>
       </li>
       <li>
@@ -32,13 +32,18 @@ const per = feed.fingerlings.per.toLocaleString('en-US');
         <p class="price-tag">from <Price k="feed-from" count /> <span>a bag</span></p>
       </li>
       <li>
-        <h3>Site visits</h3>
-        <p>Before we build, we check your ground and water. If you go ahead, the visit fee comes off the price of the job.</p>
+        <h3>Site visits <span class="opt">optional</span></h3>
+        <p>If you want one, we test your water (including pH), check the soil holds water, look at slope, drainage and access, and mark out the pond. If you go ahead, the fee comes off the job.</p>
         <p class="price-tag"><Price k="site-visit" count /></p>
       </li>
       <li>
-        <h3>Thicker liners and pond balancing</h3>
-        <p>Liner up to 1 mm thick, and balancing work on existing ponds.</p>
+        <h3>Dam liners</h3>
+        <p>Heavier HDPE dam liner, up to 1 mm thick, for dams and large ponds.</p>
+        <p class="price-tag ask">Ask for a price</p>
+      </li>
+      <li>
+        <h3>Fixing leaking ponds</h3>
+        <p>We find and repair leaks in existing ponds, so they hold their water again.</p>
         <p class="price-tag ask">Ask for a price</p>
       </li>
     </ul>
@@ -69,4 +74,5 @@ const per = feed.fingerlings.per.toLocaleString('en-US');
     .price-tag { grid-column: 2; grid-row: 1; }
     .price-tag :global([data-price]) { font-size: var(--step-2); }
   }
+  .opt { display: inline-block; vertical-align: middle; margin-left: 0.4rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); background: var(--tint); padding: 0.15rem 0.5rem; border-radius: 999px; }
 </style>

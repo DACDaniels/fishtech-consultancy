@@ -16,15 +16,15 @@ const ms = microns(feed);
 const grade: Record<number, string> = { 250: 'Standard', 300: 'Stronger', 400: 'Heavy duty' };
 const bands = sortedBands(feed);
 const per = feed.fingerlings.per.toLocaleString('en-US');
-const items = faqs(feed).filter((q) => ['How do I pay?', 'What does a site visit cost?', 'Can you build other sizes, or deeper ponds?', 'Do you work outside Harare?'].includes(q.q));
+const items = faqs(feed).filter((q) => ['How do I pay?', 'What does a site visit cost, and do I need one?', 'Can you build other sizes, or deeper ponds?', 'Do you work outside Harare?'].includes(q.q));
 ---
 <Base
   title={`Fish pond prices in Zimbabwe | Lined ponds from ${usd(pondFrom(feed))} | FishTech`}
-  description={`Prices for every standard fish pond size and liner, bird nets, tilapia fingerlings, fish feed and delivery across Zimbabwe. Lined ponds from ${usd(pondFrom(feed))}.`}
+  description={`Prices for every standard fish pond size and liner, bird and predator nets, tilapia fingerlings, fish feed and delivery across Zimbabwe. Lined ponds from ${usd(pondFrom(feed))}.`}
   jsonLd={[faqJsonLd(items)]}
 >
   <PageHero title="Fish pond prices in Zimbabwe" crumb="Pond prices">
-    <p class="lede">Every standard pond size and liner, with bird nets, fingerlings, feed and delivery. These are the prices our assistant quotes from, in US dollars.</p>
+    <p class="lede">Every standard pond size and liner, with bird and predator nets, fingerlings, feed and delivery. These are the prices we quote from, in US dollars.</p>
     <div class="btn-row" style="margin-top:1.75rem" data-first-cta>
       <WaButton tag="prices-page" message="Hi FishTech, I'd like a price for a fish pond." />
       <a class="btn btn-line" href="#calculator">Price your pond</a>
@@ -35,7 +35,7 @@ const items = faqs(feed).filter((q) => ['How do I pay?', 'What does a site visit
     <div class="wrap two">
       <div class="stack">
         <h2 id="ponds-title">Ponds, dug and lined</h2>
-        <p class="muted">Dug to 1.5 m deep in fresh ground, with HDPE plastic liner fitted. Choose the liner thickness: thicker liner is stronger and lasts longer.</p>
+        <p class="muted">Dug to 1.5 m deep in fresh ground, with HDPE dam liner fitted. Choose the liner thickness: thicker liner is stronger and lasts longer.</p>
         <div class="table-wrap">
           <table>
             <caption class="visually-hidden">Pond prices by size and liner thickness</caption>
@@ -49,7 +49,7 @@ const items = faqs(feed).filter((q) => ['How do I pay?', 'What does a site visit
             </tbody>
           </table>
         </div>
-        <p class="small muted">Other sizes on request. Liner up to 1 mm thick and pond balancing: ask for a price.</p>
+        <p class="small muted">Other sizes on request. Dam liners up to 1 mm thick, and fixing leaking ponds: ask for a price.</p>
       </div>
       <figure>
         <div class="photo tall"><Picture src={finished} formats={['avif', 'webp']} widths={[480, 800, 1100]} sizes="(max-width: 860px) 100vw, 40vw" alt="A finished lined pond full of water under a blue sky" /></div>
@@ -74,7 +74,7 @@ const items = faqs(feed).filter((q) => ['How do I pay?', 'What does a site visit
           <h3>Priced separately</h3>
           <ul>
             <li>Delivery and logistics, once per order</li>
-            <li>Bird net</li>
+            <li>Bird / predator net</li>
             <li>Fingerlings and feed</li>
             <li>The site visit, which comes off the job if you go ahead</li>
           </ul>
@@ -93,10 +93,10 @@ const items = faqs(feed).filter((q) => ['How do I pay?', 'What does a site visit
 
   <section class="section tight" aria-labelledby="extras-title">
     <div class="wrap">
-      <h2 id="extras-title" class="visually-hidden">Bird nets, fingerlings, feed and delivery</h2>
+      <h2 id="extras-title" class="visually-hidden">Bird / predator nets, fingerlings, feed and delivery</h2>
       <div class="grid4">
         <div class="stack">
-          <h3>Bird nets</h3>
+          <h3>Bird / Predator Nets</h3>
           <p class="muted">Supplied and put up over the pond.</p>
           <div class="table-wrap">
             <table>

@@ -13,10 +13,10 @@ import Price from './Price.astro';
         <p class="lede">From your first message to fish in the water.</p>
       </div>
       <div class="steps-track" data-motion="progress"><span class="rail" aria-hidden="true"><span class="bar" data-progress-bar></span></span><ol class="steps">
-        <li data-step><h3>Ask on WhatsApp</h3><p>Tell our assistant the pond size you want and where your farm is. It replies within minutes, day or night, with a written quotation. Our team checks larger jobs first.</p></li>
-        <li data-step><h3>Site visit</h3><p>We check your ground and your water before building. The visit is <Price k="site-visit" />, taken off the job if you go ahead.</p></li>
+        <li data-step><h3>Ask on WhatsApp</h3><p>Tell us the pond size you want and where your farm is. We reply within minutes, day or night, with a written quotation.</p></li>
+        <li data-step><h3>Site visit <span class="opt">optional</span></h3><p>If you want one, we test your water, check your soil and ground, and mark out the pond before building. The visit is <Price k="site-visit" />, taken off the job if you go ahead.</p></li>
         <li data-step><h3>Build</h3><p>We dig the pond to 1.5 m, then lay and fit the liner. Half the price is paid before we start and half when the pond is finished.</p></li>
-        <li data-step><h3>Stock</h3><p>We deliver your fingerlings and put up the bird net, if you've ordered them.</p></li>
+        <li data-step><h3>Stock</h3><p>We deliver your fingerlings and put up the bird / predator net, if you've ordered them.</p></li>
         <li data-step><h3>Feed</h3><p>Order the right feed for each stage as your fish grow, and we deliver it.</p></li>
       </ol></div>
     </div>
@@ -46,4 +46,5 @@ import Price from './Price.astro';
     .photo-col { position: static; }
     .photo-col { max-width: 22rem; justify-self: center; width: 100%; }
   }
+  .opt { display: inline-block; vertical-align: middle; margin-left: 0.4rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); background: var(--tint); padding: 0.15rem 0.5rem; border-radius: 999px; }
 </style>

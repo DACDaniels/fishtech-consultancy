@@ -110,7 +110,7 @@ describe('quotation', () => {
   it('writes a WhatsApp message with the request and a source tag', () => {
     const input = { size: '10 x 10 m', micron: 300, net: true, fingerlings: false, feed: false, town: 'Bindura' };
     const msg = quoteMessage(fixed, input, quote(fixed, plan, input));
-    expect(msg).toBe("Hi FishTech, I'd like a 10 × 10 m pond with 300 micron liner, plus a bird net. My farm is near Bindura. The website shows $132.");
+    expect(msg).toBe("Hi FishTech, I'd like a 10 × 10 m pond with 300 micron liner, plus a bird / predator net. My farm is near Bindura. The website shows $132.");
     const link = waLink(fixed, msg, 'calculator');
     expect(link.startsWith('https://wa.me/263711626305?text=')).toBe(true);
     expect(decodeURIComponent(link.split('text=')[1])).toContain('[web:calculator]');

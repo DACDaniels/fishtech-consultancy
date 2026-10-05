@@ -19,7 +19,7 @@ const rows: Item[][] = [
   ],
   [
     { label: `Tilapia fingerlings, ${feed.fingerlings.per.toLocaleString('en-US')}`, key: 'fingerlings' },
-    { label: `Bird net, ${sizeLabel('10 x 10 m')}`, key: 'net:10 x 10 m' },
+    { label: `Bird / predator net, ${sizeLabel('10 x 10 m')}`, key: 'net:10 x 10 m' },
     { label: 'Grower feed, 25 kg bag', key: 'feed:Grower' },
     { label: 'Starter feed, 10 kg bag', key: 'feed:Starter 2' },
   ],
@@ -42,10 +42,10 @@ const cells = (key: string) => usd(resolvePrice(feed, key) ?? 0).padStart(W, ' '
     <div class="hero-copy">
       <p class="status">
         <svg class="sonar" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><circle class="s1" cx="12" cy="12" r="6.5" /><circle class="s2" cx="12" cy="12" r="10" /></svg>
-        Our assistant is answering on WhatsApp now
+        Our sales line is open on WhatsApp now
       </p>
       <h1 id="hero-title" data-hero-title>Fish ponds, built properly, anywhere in Zimbabwe</h1>
-      <p class="hero-lede" data-hero-in>We dig and line fish ponds, put up bird nets, and supply tilapia fingerlings and feed. Get a written price from our assistant in minutes.</p>
+      <p class="hero-lede" data-hero-in>We dig and line fish ponds, put up bird and predator nets, and supply tilapia fingerlings and feed. Get a written price on WhatsApp in minutes.</p>
       <div class="btn-row" data-first-cta data-hero-in>
         <WaButton tag="hero" message="Hi FishTech, I'd like a price for a fish pond." />
         <a class="btn btn-ghost" href="#prices">Price your pond</a>
