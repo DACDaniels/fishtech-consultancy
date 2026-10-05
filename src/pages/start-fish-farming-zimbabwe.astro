@@ -35,11 +35,12 @@ const article = {
       <p>On this page</p>
       <ol>
         <li><a href="#what-you-need">What you need</a></li>
+        <li><a href="#site-visit">What a site visit checks</a></li>
         <li><a href="#pond-size">Choosing a pond size</a></li>
         <li><a href="#liner">Liners</a></li>
         <li><a href="#stocking">Stocking</a></li>
         <li><a href="#feeding">Feeding by stage</a></li>
-        <li><a href="#care">Birds, water and chemicals</a></li>
+        <li><a href="#care">Predators, water and fish health</a></li>
         <li><a href="#harvest">Harvest and selling</a></li>
         <li><a href="#mistakes">Common mistakes</a></li>
       </ol>
@@ -55,9 +56,22 @@ const article = {
         <li><strong>A pond</strong>, dug and lined.</li>
         <li><strong>Good fingerlings</strong>, the young fish you stock.</li>
         <li><strong>Fish feed</strong> for each stage of growth.</li>
-        <li><strong>Someone to feed and watch the fish every day.</strong></li>
+        <li><strong>Someone to watch the fish every day</strong>, and to feed them, or an automatic feeder to do the feeding.</li>
       </ul>
       <p>A good first step is one or two ponds. Learn how to run them, then grow from there.</p>
+
+      <h2 id="site-visit">What a site visit checks</h2>
+      <p>A site visit is optional, and costs <Price k="site-visit" />, taken off the job if you go ahead. Whether you want a lined pond or an earthen one, it's worth doing before you dig. We check:</p>
+      <ul>
+        <li><strong>The water.</strong> We test its pH (how acid or alkaline it is), and look at how clear and clean it is, and whether run-off from fields, mines or factories could reach it.</li>
+        <li><strong>How much water there is.</strong> Whether your borehole, dam or river can keep the pond full through the dry season.</li>
+        <li><strong>The soil.</strong> Whether it holds water. Clay soils hold water; sandy ground, rocks and termite mounds leak or make digging hard. This matters most for an earthen pond.</li>
+        <li><strong>Slope and drainage.</strong> Gently sloping ground is best: less digging, and the pond can be drained when you harvest.</li>
+        <li><strong>Flooding.</strong> Where storm water runs, and whether the site floods in the rains.</li>
+        <li><strong>Sun and trees.</strong> An open, sunny spot, away from tree roots and falling leaves.</li>
+        <li><strong>Access and security.</strong> Whether a truck can reach the site with liner, fingerlings and feed, and whether the pond is close enough to your home to watch.</li>
+        <li><strong>Layout.</strong> We mark out the pond with you and agree its size and position.</li>
+      </ul>
 
       <h2 id="pond-size">Choosing a pond size</h2>
       <p>Our standard ponds are 1.5 m deep. A 10 × 10 m pond holds 1,500 fingerlings, and larger ponds hold more in proportion.</p>
@@ -72,13 +86,13 @@ const article = {
       <p class="small muted">"From" is the price with 250 micron liner. See <a href="/pond-prices">all pond prices</a>.</p>
 
       <h2 id="liner">Liners, and why thickness matters</h2>
-      <p>A lined pond holds its water. We use HDPE plastic liner in three thicknesses. Thicker liner is stronger and lasts longer.</p>
+      <p>A lined pond holds its water. We use HDPE dam liner in three thicknesses. Thicker liner is stronger and lasts longer.</p>
       <ul>
         <li><strong>250 micron</strong>, standard production lining.</li>
         <li><strong>300 micron</strong>, for extra durability.</li>
         <li><strong>400 micron</strong>, heavy duty, for commercial farms.</li>
       </ul>
-      <p>We also supply liner up to 1 mm thick on request.</p>
+      <p>We also supply dam liner up to 1 mm thick, and fix leaking ponds. Ask us for a price.</p>
 
       <figure>
         <div class="photo wide"><Picture src={crew} formats={['avif', 'webp']} widths={[600, 1000, 1400]} sizes="(max-width: 860px) 100vw, 640px" alt="The crew working on several lined ponds" loading="lazy" /></div>
@@ -87,7 +101,6 @@ const article = {
 
       <h2 id="stocking">Stocking</h2>
       <p>Stock 1,500 fingerlings in a 10 × 10 m pond, and more in proportion in a bigger one. We sell tilapia fingerlings in lots of 1,500 for <Price k="fingerlings" />.</p>
-      <p>We buy our fingerlings from suppliers, so we can't promise how fast they will grow.</p>
 
       <h2 id="feeding">Feeding by stage</h2>
       <p>Feed is the biggest running cost of fish farming. Feeding the right amount, not too much and not too little, makes the biggest difference to profit.</p>
@@ -100,13 +113,14 @@ const article = {
     </div>
 
     <div class="prose">
-      <h2 id="care">Birds, water and chemicals</h2>
-      <p>Birds eat small fish. A bird net over the pond protects them.</p>
+      <h2 id="care">Predators, water and fish health</h2>
+      <p>Birds and other predators eat fish. A bird / predator net over the pond protects them.</p>
       <figure>
-        <div class="photo wide"><Picture src={fingerlings} formats={['avif', 'webp']} widths={[600, 1000, 1400]} sizes="(max-width: 860px) 100vw, 640px" alt="Young tilapia in green pond water under a bird net" loading="lazy" /></div>
-        <figcaption>Fingerlings under a bird net, February 2026.</figcaption>
+        <div class="photo wide"><Picture src={fingerlings} formats={['avif', 'webp']} widths={[600, 1000, 1400]} sizes="(max-width: 860px) 100vw, 640px" alt="Young tilapia in green pond water under a bird / predator net" loading="lazy" /></div>
+        <figcaption>Fingerlings under a bird / predator net, February 2026.</figcaption>
       </figure>
-      <p>We don't include chemicals in our packages, and we advise farmers not to use chemicals in their ponds.</p>
+      <p><strong>Keep the water clean and full of oxygen.</strong> Fish breathe the oxygen in the water. Change part of the water regularly so waste and old feed don't build up, and use an aerator or a gentle flow of fresh water, especially on hot, still nights. Fish gulping at the surface early in the morning is a sign they are short of oxygen.</p>
+      <p><strong>No pond chemicals.</strong> We don't sell medicines or pond chemicals, and we advise farmers not to use them. Most fish health problems come from dirty water, too little oxygen, overfeeding or too many fish, so fix those first. If fish do get sick, a short salt bath is the safe treatment fish farmers use. Ask us on WhatsApp before you treat, and try it on a few fish first.</p>
 
       <h2 id="harvest">Harvest and selling</h2>
       <p>Tilapia usually take about 6 to 8 months to reach a size people like to buy, if they are fed well and the water is good.</p>
@@ -116,13 +130,15 @@ const article = {
       <ul>
         <li><strong>Guessing how much to feed.</strong> Too much wastes your biggest cost; too little slows growth.</li>
         <li><strong>Water that runs out</strong> in the dry season.</li>
-        <li><strong>No bird net</strong> over a pond of small fish.</li>
+        <li><strong>No bird / predator net</strong> over a pond of small fish.</li>
+        <li><strong>Poor aeration.</strong> Too little oxygen in the water, especially on hot, still nights.</li>
+        <li><strong>Dirty water that is never changed.</strong> Waste and old feed build up and make fish sick.</li>
         <li><strong>No buyers lined up</strong> before harvest.</li>
         <li><strong>Starting too big.</strong> One or two ponds teach you more, for less.</li>
       </ul>
 
       <h2>What we won't promise</h2>
-      <p>We don't promise a profit, a harvest weight or a survival rate. They depend on your water, feeding, fingerlings and daily care. We'll help you plan, and our assistant can answer questions any time.</p>
+      <p>We don't promise a profit, a harvest weight or a survival rate. They depend on your water, feeding, fingerlings and daily care. We'll help you plan, and you can ask us on WhatsApp any time.</p>
 
       <div class="cta">
         <p class="lede">Ready to plan your pond?</p>

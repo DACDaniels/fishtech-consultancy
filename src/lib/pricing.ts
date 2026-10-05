@@ -137,7 +137,7 @@ export function quote(feed: Feed, plan: FeedPlan, input: QuoteInput): Quote {
   const lines: QuoteLine[] = [{ label: `${size.label} pond, ${input.micron} micron liner`, amount: pond }];
   if (input.net) {
     const net = netPrice(feed, input.size);
-    if (net !== undefined) lines.push({ label: `Bird net, ${size.label}`, amount: net });
+    if (net !== undefined) lines.push({ label: `Bird / predator net, ${size.label}`, amount: net });
   }
   const sp = stockingPlan(feed, plan, size.area);
   if (input.fingerlings) {
@@ -168,10 +168,10 @@ export function phoneDisplay(feed: Pick<Feed, 'whatsapp'>): string {
   return d.length === 12 ? `+${d.slice(0, 3)} ${d.slice(3, 5)} ${d.slice(5, 8)} ${d.slice(8)}` : `+${d}`;
 }
 
-/** The message a quotation sends to the assistant. */
+/** The message a quotation sends to us on WhatsApp. */
 export function quoteMessage(feed: Feed, input: QuoteInput, q: Quote): string {
   const size = pondSizes(feed).find((s) => s.key === input.size);
-  const extras = [input.net && 'a bird net', input.fingerlings && 'fingerlings', input.feed && 'feed from start to harvest'].filter(Boolean);
+  const extras = [input.net && 'a bird / predator net', input.fingerlings && 'fingerlings', input.feed && 'feed from start to harvest'].filter(Boolean);
   let m = `Hi FishTech, I'd like a ${size?.label ?? input.size} pond with ${input.micron} micron liner`;
   if (extras.length) m += `, plus ${extras.join(', ').replace(/, ([^,]*)$/, ' and $1')}`;
   m += '.';

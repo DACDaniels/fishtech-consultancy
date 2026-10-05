@@ -69,7 +69,7 @@ test('calculator adds pond, net and one delivery charge, and writes the WhatsApp
   await expect(calc.locator('[data-total]')).toHaveText(usd(expected));
   const href = await calc.locator('[data-send]').getAttribute('href');
   const msg = decodeURIComponent(href!.split('text=')[1]);
-  expect(msg).toContain('20 × 20 m pond with 400 micron liner, plus a bird net');
+  expect(msg).toContain('20 × 20 m pond with 400 micron liner, plus a bird / predator net');
   expect(msg).toContain('near Bindura');
   expect(msg).toContain(usd(expected));
   expect(msg).toMatch(/\[web:calculator\]$/);
@@ -81,6 +81,21 @@ test('calculator says so when a town is not on the list', async ({ page }) => {
   await page.locator('#prices').getByLabel(/Where is your farm/).fill('Nowhereville');
   await expect(page.locator('#prices [data-town-help]')).toContainText("isn't on our list");
   await expect(page.locator('#prices [data-total]')).toHaveText(usd(price('10 x 10 m', 250)));
+});
+
+test('town picker searches, shows distance and price, and accepts a town not on the list', async ({ page }) => {
+  await noBlockedFeed(page);
+  await page.goto('/');
+  const box = page.locator('#prices').getByLabel(/Where is your farm/);
+  await box.fill('ind');
+  const opt = page.locator('#prices [role="option"]:not([hidden])', { hasText: 'Bindura' });
+  await expect(opt).toContainText('88 km');
+  await expect(opt).toContainText(usd(band(88)));
+  await opt.click();
+  await expect(box).toHaveValue('Bindura');
+  await box.fill('Nowhereville');
+  await expect(page.locator('#prices [data-other]')).toBeVisible();
+  await expect(page.locator('#prices [data-other]')).toContainText('Nowhereville');
 });
 
 test('prices refresh from the live feed after the page loads', async ({ page }) => {

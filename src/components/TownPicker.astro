@@ -1,0 +1,132 @@
+---
+// "Where is your farm?" — a searchable list of every town we have a road distance for, with
+// the distance and the delivery charge beside each one. Typing filters the list (matches
+// anywhere in the name). A place that isn't listed can still be used: the last option says
+// so, and the WhatsApp sales line works the distance out. Keyboard: arrows, Enter, Escape.
+// The visible input keeps its `name`, so forms and scripts read it exactly as before.
+import { feed } from '../lib/site';
+import { bandFor, usd } from '../lib/pricing';
+interface Props { id: string; name?: string; label: string; hint?: string; placeholder?: string; light?: boolean }
+const { id, name, label, hint, placeholder = 'Search for your town', light = false } = Astro.props;
+const towns = [...feed.towns].sort((a, b) => a.place.localeCompare(b.place));
+---
+<div class={`picker${light ? ' light' : ''}`} data-picker>
+  <label for={id}>{label} {hint && <span class="muted">{hint}</span>}</label>
+  <div class="box">
+    <svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" /><circle cx="12" cy="9.5" r="2.5" /></svg>
+    <input id={id} name={name} type="text" role="combobox" aria-expanded="false" aria-autocomplete="list"
+      aria-controls={`${id}-list`} autocomplete="off" spellcheck="false" placeholder={placeholder} />
+    <button type="button" class="clear" aria-label="Clear" hidden data-clear>×</button>
+  </div>
+  <ul id={`${id}-list`} role="listbox" class="list" hidden data-list>
+    {towns.map((t) => (
+      <li role="option" data-place={t.place} data-km={t.km}>
+        <span class="place">{t.place}</span>
+        <span class="km">{t.km === 0 ? 'Harare' : `${t.km} km`}</span>
+        <span class="cost" data-band-km={t.km}>{usd(bandFor(feed, t.km).price)}</span>
+      </li>
+    ))}
+    <li role="option" class="other" data-other hidden><span class="place">Use “<b data-typed></b>”</span><span class="km">Not listed: we’ll work out the distance</span></li>
+  </ul>
+</div>
+
+<script>
+  import { currentFeed } from '../scripts/live-prices';
+  import { bandFor, usd } from '../lib/pricing';
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[^a-z0-9 ]/g, '').trim();
+
+  document.querySelectorAll<HTMLElement>('[data-picker]').forEach((root) => {
+    const input = root.querySelector('input')!;
+    const list = root.querySelector<HTMLElement>('[data-list]')!;
+    const clear = root.querySelector<HTMLButtonElement>('[data-clear]')!;
+    const other = list.querySelector<HTMLElement>('[data-other]')!;
+    const typed = other.querySelector<HTMLElement>('[data-typed]')!;
+    const items = Array.from(list.querySelectorAll<HTMLElement>('li[data-place]'));
+    let active = -1;
+
+    const visible = () => [...items.filter((li) => !li.hidden), ...(other.hidden ? [] : [other])];
+    const open = (on: boolean) => { list.hidden = !on; input.setAttribute('aria-expanded', String(on)); if (!on) setActive(-1); };
+    function setActive(i: number) {
+      const v = visible();
+      v.forEach((li, j) => li.classList.toggle('on', j === i));
+      active = i;
+      if (v[i]) { v[i].scrollIntoView({ block: 'nearest' }); input.setAttribute('aria-activedescendant', v[i].id); }
+      else input.removeAttribute('aria-activedescendant');
+    }
+    items.forEach((li, i) => { li.id = `${input.id}-o${i}`; });
+    other.id = `${input.id}-other`;
+
+    function filter() {
+      const q = norm(input.value);
+      let exact = false, shown = 0;
+      for (const li of items) {
+        const p = norm(li.dataset.place!);
+        const hit = !q || p.includes(q);
+        li.hidden = !hit;
+        if (hit) shown++;
+        if (p === q) exact = true;
+      }
+      // Starts-with matches first, then the rest, each alphabetically.
+      if (q) items.filter((li) => !li.hidden).sort((a, b) => Number(!norm(a.dataset.place!).startsWith(q)) - Number(!norm(b.dataset.place!).startsWith(q)) || a.dataset.place!.localeCompare(b.dataset.place!)).forEach((li) => list.insertBefore(li, other));
+      else items.forEach((li) => list.insertBefore(li, other));
+      other.hidden = !q || exact || q.length < 2;
+      typed.textContent = input.value.trim();
+      clear.hidden = !input.value;
+      root.classList.toggle('empty', shown === 0);
+      setActive(q && (shown || !other.hidden) ? 0 : -1);
+    }
+    function choose(li: HTMLElement) {
+      input.value = li.dataset.place ?? input.value.trim();
+      open(false);
+      clear.hidden = !input.value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    input.addEventListener('focus', () => { filter(); open(true); });
+    input.addEventListener('input', (e) => { if (e.isTrusted) { filter(); open(true); } });
+    input.addEventListener('keydown', (e) => {
+      const v = visible();
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (list.hidden) { filter(); open(true); } setActive(Math.min(active + 1, v.length - 1)); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(Math.max(active - 1, 0)); }
+      else if (e.key === 'Enter' && !list.hidden && v[active]) { e.preventDefault(); choose(v[active]); }
+      else if (e.key === 'Escape') open(false);
+    });
+    list.addEventListener('pointerdown', (e) => {
+      const li = (e.target as HTMLElement).closest('li');
+      if (li && !li.hidden) { e.preventDefault(); choose(li as HTMLElement); }
+    });
+    input.addEventListener('blur', () => setTimeout(() => open(false), 120));
+    clear.addEventListener('click', () => { input.value = ''; filter(); input.focus(); input.dispatchEvent(new Event('input', { bubbles: true })); });
+
+    // Keep the delivery figures beside each town in step with the live price list.
+    addEventListener('fishtech:prices', () => {
+      const feed = currentFeed();
+      list.querySelectorAll<HTMLElement>('[data-band-km]').forEach((el) => { el.textContent = usd(bandFor(feed, Number(el.dataset.bandKm)).price); });
+    });
+  });
+</script>
+
+<style>
+  .picker { position: relative; display: grid; gap: 0.5rem; }
+  label { font-weight: 750; color: var(--deep); }
+  .box { position: relative; }
+  .pin { position: absolute; left: 0.85rem; top: 50%; width: 1.15rem; height: 1.15rem; transform: translateY(-50%); fill: none; stroke: var(--teal); stroke-width: 2; pointer-events: none; }
+  input { width: 100%; font: inherit; padding: 0.8rem 2.6rem 0.8rem 2.6rem; border-radius: 12px; border: 1.5px solid var(--line); min-height: 3.1rem; background: var(--mist); color: var(--ink); }
+  input:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--tint); background: var(--white); }
+  .clear { position: absolute; right: 0.4rem; top: 50%; transform: translateY(-50%); width: 2.2rem; height: 2.2rem; border: 0; border-radius: 50%; background: transparent; color: var(--muted); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+  .clear:hover { background: var(--tint); color: var(--deep); }
+  .list {
+    position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 0.35rem); margin: 0; padding: 0.35rem; list-style: none;
+    max-height: min(20rem, 50vh); overflow-y: auto; overscroll-behavior: contain;
+    background: var(--white); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 24px 48px -20px rgba(var(--deep-rgb), 0.45);
+  }
+  .list li { display: grid; grid-template-columns: 1fr auto auto; gap: 0.75rem; align-items: center; padding: 0.65rem 0.75rem; border-radius: 9px; cursor: pointer; }
+  .list li[hidden] { display: none; }
+  .list li.on, .list li:hover { background: var(--tint); }
+  .place { font-weight: 650; color: var(--ink); }
+  .km { color: var(--muted); font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+  .cost { color: var(--teal); font-weight: 750; font-variant-numeric: tabular-nums; min-width: 3ch; text-align: right; }
+  .other { grid-template-columns: 1fr !important; gap: 0.1rem !important; border-top: 1px solid var(--line); border-radius: 0 0 9px 9px !important; margin-top: 0.25rem; }
+  .empty .other { border-top: 0; }
+</style>

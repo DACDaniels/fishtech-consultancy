@@ -1,4 +1,5 @@
 ---
+import TownPicker from './TownPicker.astro';
 // Pond price calculator with a to-scale plan drawing. Server renders the
 // starting state (10 × 10 m, thinnest liner) so the section is complete before
 // any script runs; src/scripts/calculator.ts makes it live.
@@ -23,7 +24,7 @@ const W0 = sizes[0].length * PX, H0 = sizes[0].width * PX;
   <div class="wrap">
     <div class="section-head">
       <H data-motion="lines" id={`${id}-title`}>Price your pond</H>
-      <p class="lede" data-motion="fade">Choose a size and liner, add what you need, and tell us where your farm is. You'll see the price straight away. Send it to our assistant for a written quotation.</p>
+      <p class="lede" data-motion="fade">Choose a size and liner, add what you need, and tell us where your farm is. You'll see the price straight away. Send it to us on WhatsApp for a written quotation.</p>
     </div>
 
     <div class="calc-grid">
@@ -71,9 +72,9 @@ const W0 = sizes[0].length * PX, H0 = sizes[0].width * PX;
           </div>
           <p class="small" data-note>Add your town to include delivery and logistics.</p>
           <a class="btn btn-main" data-send href={wa(quoteMessage(feed, start, q), tag)} data-wa-tag={tag}>
-            <Icon name="chat" /><span>Send this to our assistant</span>
+            <Icon name="chat" /><span>Send this to us on WhatsApp</span>
           </a>
-          <p class="small fine">A guide from our published price list. Our assistant sends your written quotation, which holds for 30 days. A site visit costs <Price k="site-visit" />, taken off the job if you go ahead.</p>
+          <p class="small fine">A guide from our published price list. We send your written quotation, which holds for 30 days. A site visit costs <Price k="site-visit" />, taken off the job if you go ahead.</p>
         </div>
       </div>
       <form class="calc-form" data-form>
@@ -97,14 +98,12 @@ const W0 = sizes[0].length * PX, H0 = sizes[0].width * PX;
         </fieldset>
         <fieldset>
           <legend>Add to your order</legend>
-          <label class="tick"><input type="checkbox" name="net" /><span>Bird net</span><Icon name="check" /></label>
+          <label class="tick"><input type="checkbox" name="net" /><span>Bird / predator net</span><Icon name="check" /></label>
           <label class="tick"><input type="checkbox" name="fingerlings" /><span>Tilapia fingerlings for this pond</span><Icon name="check" /></label>
           <label class="tick"><input type="checkbox" name="feed" /><span>Feed from start to harvest</span><Icon name="check" /></label>
         </fieldset>
         <div class="field">
-          <label for={`${id}-town`}>Where is your farm? <span class="muted">Nearest town</span></label>
-          <input id={`${id}-town`} name="town" type="text" list={`${id}-towns`} autocomplete="off" placeholder="For example, Bindura" />
-          <datalist id={`${id}-towns`}>{feed.towns.map((t) => <option value={t.place} />)}</datalist>
+          <TownPicker id={`${id}-town`} name="town" label="Where is your farm?" hint="Nearest town" placeholder="Search, or type your town" />
           <p class="small muted" data-town-help aria-live="polite">Delivery and logistics is one charge per order, from <Price k="band:0" />, by road distance from Harare.</p>
         </div>
       </form>

@@ -98,7 +98,7 @@ function setup(root: HTMLElement) {
         ? `${t.place}: delivery and logistics is ${usd(b.price)} per order.`
         : `${t.place} is about ${t.km} km from Harare by road. Delivery and logistics: ${usd(b.price)} per order.`;
     } else if (input.town.length > 2) {
-      help.textContent = `${input.town} isn't on our list yet. Our assistant will work out the distance when you send this.`;
+      help.textContent = `${input.town} isn't on our list yet. We'll work out the distance when you send this.`;
     }
   }
 

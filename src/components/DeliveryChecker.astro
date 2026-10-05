@@ -1,13 +1,11 @@
 ---
-import { feed } from '../lib/site';
 import Price from './Price.astro';
+import TownPicker from './TownPicker.astro';
 interface Props { id?: string }
 const { id = 'checker' } = Astro.props;
 ---
 <div class="checker" data-checker>
-  <label for={`${id}-input`}>Check delivery to your area</label>
-  <input id={`${id}-input`} type="text" list={`${id}-list`} autocomplete="off" placeholder="Type your nearest town" />
-  <datalist id={`${id}-list`}>{feed.towns.map((t) => <option value={t.place} />)}</datalist>
+  <TownPicker id={`${id}-input`} label="Check delivery to your area" placeholder="Search, or type your nearest town" />
   <p class="out" aria-live="polite" data-out>From <Price k="band:0" /> near Harare to <Price k="band:3" /> for the furthest towns. One charge per order.</p>
 </div>
 <script>
@@ -28,7 +26,7 @@ const { id = 'checker' } = Astro.props;
           ? `${t.place}: delivery and logistics is ${usd(b.price)} per order.`
           : `${t.place} is about ${t.km} km from Harare by road. Delivery and logistics: ${usd(b.price)} per order.`;
       } else if (q.length > 2) {
-        out.textContent = `${q} isn't on our list yet. We still deliver there: tell our assistant your nearest town and it will work out the distance.`;
+        out.textContent = `${q} isn't on our list yet. We still deliver there: send us your nearest town on WhatsApp and we'll work out the distance.`;
       }
     };
     input.addEventListener('input', run);
@@ -37,9 +35,6 @@ const { id = 'checker' } = Astro.props;
 </script>
 <style>
   .checker { display: grid; gap: 0.5rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; }
-  label { font-weight: 750; color: var(--deep); }
-  input { font: inherit; padding: 0.8rem 0.9rem; border-radius: 10px; border: 1.5px solid var(--line); min-height: 3rem; background: var(--mist); color: var(--ink); }
-  input:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--tint); }
   .out { color: var(--ink); }
   .out :global([data-price]) { color: var(--teal); font-weight: 750; }
 </style>
