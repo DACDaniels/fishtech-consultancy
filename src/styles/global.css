@@ -240,6 +240,14 @@ html.motion:not(.motion-ready) [data-motion~='lines'] { visibility: hidden; }
 .m-line { padding-bottom: 0.06em; margin-bottom: -0.06em; }
 
 /* Palette B: Cobalt and Green */
+html[data-palette='c'] {
+  /* Proposal 2026-10-05: Bold Teal and Sun (artifact "FishTech Brand Colours"). */
+  --teal: #00787f; --brand: #00808a; --glow: #14d9c6; --glow-rgb: 20, 217, 198;
+  --deep: #002e36; --deep-rgb: 0, 46, 54; --ink-deep: #001a1f;
+  --gold: #ffb81c; --gold-hover: #ffc845; --on-gold: #002e36; --green: #22a85a;
+  --mist: #eaf6f5; --ink: #0b1f24; --tint: #d6ecea; --deep-2: #01434d;
+  --band-1: #8fcbc6; --band-2: #2c9ea3; --band-3: #00808a; --band-4: #002e36;
+}
 html[data-palette='b'] {
   --teal: #0050a0; --brand: #0050a0; --glow: #3db2ff; --glow-rgb: 61, 178, 255;
   --deep: #062447; --deep-rgb: 6, 36, 71; --ink-deep: #020f22;
