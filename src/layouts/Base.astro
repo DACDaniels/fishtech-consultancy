@@ -33,13 +33,6 @@ const snapshot = JSON.stringify(feed);
       (function () {
         var d = document.documentElement;
         d.classList.add('js');
-        // Palette comparison for the preview: ?palette=a, ?palette=b or ?palette=c, remembered for the visit.
-        try {
-          var q = new URLSearchParams(location.search).get('palette');
-          if (q === 'a' || q === 'b' || q === 'c') sessionStorage.setItem('ft-palette', q);
-          var pal = sessionStorage.getItem('ft-palette');
-          if (pal === 'b' || pal === 'c') d.setAttribute('data-palette', pal);
-        } catch (e) {}
         if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
           d.classList.add('motion');
           setTimeout(function () { if (!window.__motionReady) d.classList.remove('motion'); }, 4000);
@@ -62,7 +55,7 @@ const snapshot = JSON.stringify(feed);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#063A43" />
+    <meta name="theme-color" content="#04263F" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
