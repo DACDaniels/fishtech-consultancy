@@ -172,3 +172,9 @@ test('robots.txt points at the real sitemap, and the sitemap uses the public add
   }
   expect(urls).not.toContain('https://fishtech.co.zw');
 });
+
+test('home page carries the Google Search Console verification tag', async ({ page }) => {
+  await noBlockedFeed(page);
+  await page.goto('/');
+  await expect(page.locator('meta[name="google-site-verification"]')).toHaveAttribute('content', '6asd_9ddlYQ59SkiyQ5jdLi-uc1ogTaRCxeM-fjBKXY');
+});
