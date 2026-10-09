@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://fishtech.co.zw',
+  site: 'https://www.fishtech.co.zw',
   trailingSlash: 'never',
   build: { format: 'file' },
   integrations: [sitemap()],

@@ -141,3 +141,34 @@ test.describe('with motion', () => {
     await expect(page.locator('html')).not.toHaveClass(/(^|\s)intro(\s|$)/);
   });
 });
+
+// Search: one public address everywhere, and nothing that sends Google elsewhere.
+const ADDRESS = 'https://www.fishtech.co.zw';
+
+for (const path of ['/', '/pond-prices', '/start-fish-farming-zimbabwe', '/areas-we-cover']) {
+  test(`${path}: canonical and share address use ${ADDRESS}`, async ({ page }) => {
+    await noBlockedFeed(page);
+    await page.goto(path);
+    const want = path === '/' ? `${ADDRESS}/` : `${ADDRESS}${path}`;
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', want);
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', want);
+    const ld = (await page.locator('script[type="application/ld+json"]').allTextContents()).join(' ');
+    expect(ld).toContain('"founder"');
+    expect(ld).toContain('Daniel Anesu Chadambuka');
+    expect(ld).not.toMatch(/https:\/\/fishtech\.co\.zw/);
+  });
+}
+
+test('robots.txt points at the real sitemap, and the sitemap uses the public address', async ({ request }) => {
+  const robots = await (await request.get('/robots.txt')).text();
+  expect(robots).toContain(`Sitemap: ${ADDRESS}/sitemap-index.xml`);
+  expect(robots).not.toContain('yourdomain');
+  expect(robots).not.toMatch(/Disallow:\s*\/\s*$/m);
+  const index = await (await request.get('/sitemap-index.xml')).text();
+  expect(index).toContain(`${ADDRESS}/sitemap-0.xml`);
+  const urls = await (await request.get('/sitemap-0.xml')).text();
+  for (const p of ['/', '/pond-prices', '/start-fish-farming-zimbabwe', '/areas-we-cover']) {
+    expect(urls).toContain(`<loc>${ADDRESS}${p}</loc>`);
+  }
+  expect(urls).not.toContain('https://fishtech.co.zw');
+});

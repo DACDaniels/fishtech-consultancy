@@ -7,6 +7,17 @@ Decisions and the brief live in the business repository, `DACDaniels/blueacre-op
 `docs/specs/website.md` (what the site must and must not say), `docs/brand/brand-identity.md`
 (colours, logo, typeface; BDR-0003) and `docs/DECISIONS.md` (2026-10-04 entries).
 
+## Search (Google)
+
+- **One public address: `https://www.fishtech.co.zw`.** It is set once, in `astro.config.mjs` (`site`)
+  and `src/lib/site.ts` (`SITE`); canonical tags, share links, the sitemap and structured data all
+  follow it. The bare `fishtech.co.zw` must redirect **permanently** to www (Vercel domain setting).
+- `public/robots.txt` points at `/sitemap-index.xml`, which `@astrojs/sitemap` builds.
+- Structured data in `src/layouts/Base.astro` describes FishTech and names Daniel Anesu Chadambuka
+  as founder (no founder section on the page, by decision).
+- Browser tests fail if a page's canonical or the sitemap uses any other address, or if robots.txt
+  points anywhere else. Decisions: `blueacre-ops/docs/DECISIONS.md` 2026-10-09, "Search".
+
 ## Prices: never typed into the code
 
 Every price comes from the WhatsApp assistant's public price feed,
@@ -32,7 +43,7 @@ The stocking and feed figures for a 10 × 10 m pond are in `src/data/feed-plan.j
 | `npm run dev` | Local site at http://localhost:4321 |
 | `npm run build` | Fetch prices, then build to `dist/` |
 | `npm test` | Price arithmetic tests (Vitest) |
-| `npm run test:e2e` | Browser tests (Playwright): calculator, live prices, links, phone layout, forbidden words |
+| `npm run test:e2e` | Browser tests (Playwright): calculator, live prices, links, phone layout, forbidden words, search address and sitemap |
 | `node scripts/screenshots.mjs` | Desktop and phone screenshots of every page into `screenshots/` |
 
 ## Brand files

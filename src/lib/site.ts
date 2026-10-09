@@ -9,6 +9,7 @@ export const plan = planJson as FeedPlan;
 export const PHONE = phoneDisplay(feed);
 export const CHANNEL = 'https://whatsapp.com/channel/0029VbBuyfj0gcfS8vNx7s0e';
 export const FEED_URL = 'https://ops.fishtech.co.zw/prices.json';
-export const SITE = 'https://fishtech.co.zw';
+// The one public address. The bare fishtech.co.zw redirects here (Vercel domain setting).
+export const SITE = 'https://www.fishtech.co.zw';
 export const wa = (message: string, tag: string) => waLink(feed, message, tag);
 export const HELLO = 'Hi FishTech, I would like a price.';
