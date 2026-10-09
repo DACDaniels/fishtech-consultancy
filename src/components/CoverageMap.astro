@@ -14,7 +14,7 @@ const right = new Set(m.towns.filter((t) => t.x < m.width * 0.55 && t.place !== 
     <desc id="map-desc">Every town on our list, shaded by its delivery and logistics band, measured by road from Harare.</desc>
     <path d={m.outline} class="land" />
     {m.towns.map((t) => (
-      <circle cx={t.x} cy={t.y} r={t.place === 'Harare' ? 7 : 5} class={`dot b${t.band + 1}`} style={`--d:${Math.round(t.km * 2.2)}ms`}><title>{`${t.place}: about ${t.km} km by road, ${usd(m.bands[t.band].price)}`}</title></circle>
+      <circle cx={t.x} cy={t.y} r={t.place === 'Harare' ? 7 : 5} class={`dot b${t.band + 1}`} style={`--d:${Math.round(t.km * 2.2)}ms`}><title>{t.km === 0 ? `${t.place}: ${usd(m.bands[t.band].price)} delivery and logistics` : `${t.place}: about ${t.km} km by road, ${usd(m.bands[t.band].price)}`}</title></circle>
     ))}
     {harare && <circle cx={harare.x} cy={harare.y} r="13" class="ring" />}
     {harare && <circle cx={harare.x} cy={harare.y} r="13" class="pulse-ring" />}
