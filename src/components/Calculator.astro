@@ -37,7 +37,7 @@ const W0 = sizes[0].length * PX, H0 = sizes[0].width * PX;
               <path d="M0 0v10M0 0h10" stroke="#ffffff" stroke-opacity=".55" stroke-width="1" />
             </pattern>
             <linearGradient id={`${id}-water`} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#2fd0c6" stop-opacity=".55" /><stop offset="1" stop-color="#00707c" stop-opacity=".55" />
+              <stop offset="0" stop-color="#2ee6d0" stop-opacity=".55" /><stop offset="1" stop-color="#00808a" stop-opacity=".55" />
             </linearGradient>
           </defs>
           <rect x="0" y="0" width="440" height="330" rx="14" class="ground" />
@@ -122,12 +122,12 @@ const W0 = sizes[0].length * PX, H0 = sizes[0].width * PX;
   .left { display: grid; gap: 1.5rem; position: sticky; top: calc(var(--header-h) + 1rem); }
   .drawing { display: grid; gap: 0.75rem; }
   .drawing svg { width: 100%; height: auto; }
-  .drawing svg { border-radius: var(--radius); box-shadow: 0 30px 60px -30px rgba(6, 58, 67, 0.55); }
-  .ground { fill: #05303a; }
-  .grid-lines line { stroke: rgba(143, 203, 198, 0.12); stroke-width: 1; }
-  .pond { stroke: #5fe0d4; stroke-linejoin: round; filter: drop-shadow(0 0 6px rgba(95, 224, 212, 0.55)); }
-  .dim line { stroke: rgba(207, 231, 228, 0.7); stroke-width: 1.2; }
-  .dim text { fill: #e6f4f2; font: 700 15px var(--font); font-stretch: 88%; }
+  .drawing svg { border-radius: var(--radius); box-shadow: 0 30px 60px -30px rgba(4, 38, 63, 0.55); }
+  .ground { fill: #05223a; }
+  .grid-lines line { stroke: rgba(143, 190, 214, 0.12); stroke-width: 1; }
+  .pond { stroke: #2ee6d0; stroke-linejoin: round; filter: drop-shadow(0 0 6px rgba(95, 224, 212, 0.55)); }
+  .dim line { stroke: rgba(207, 222, 234, 0.7); stroke-width: 1.2; }
+  .dim text { fill: #e8f0f6; font: 700 15px var(--font); font-stretch: 88%; }
   .fish { fill: #ffffff; font: 700 14px var(--font); }
 
   fieldset { border: 0; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 0.6rem; min-width: 0; }
@@ -141,7 +141,7 @@ const W0 = sizes[0].length * PX, H0 = sizes[0].width * PX;
     transition: background-color 150ms, border-color 150ms, color 150ms;
   }
   .chip input:checked + span { background: var(--teal); border-color: var(--teal); color: var(--white); }
-  .chip input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .chip input:focus-visible + span { outline: 3px solid var(--teal); outline-offset: 2px; }
   .tick {
     display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.75rem; cursor: pointer;
     padding: 0.75rem 0.9rem; border-radius: 10px; border: 1.5px solid var(--line); background: var(--mist); font-weight: 600; position: relative;
@@ -150,7 +150,7 @@ const W0 = sizes[0].length * PX, H0 = sizes[0].width * PX;
   .tick :global(svg) { width: 1.4rem; height: 1.4rem; padding: 0.15rem; border-radius: 6px; border: 1.5px solid var(--line); color: transparent; background: var(--white); }
   .tick:has(input:checked) { border-color: var(--teal); background: var(--tint); }
   .tick:has(input:checked) :global(svg) { background: var(--teal); border-color: var(--teal); color: var(--white); }
-  .tick:has(input:focus-visible) { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .tick:has(input:focus-visible) { outline: 3px solid var(--teal); outline-offset: 2px; }
   .field { display: grid; gap: 0.25rem; }
   .field input {
     font: inherit; padding: 0.8rem 0.9rem; border-radius: 10px; border: 1.5px solid var(--line); background: var(--white); color: var(--ink); min-height: 3rem;

@@ -16,9 +16,9 @@ from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 from fontTools.varLib.instancer import instantiateVariableFont
 
-TEAL = "#00707C"
-DEEP = "#063A43"
-GREEN = "#2FA866"
+TEAL = "#00808A"
+DEEP = "#04263F"
+GREEN = "#22A85A"
 WHITE = "#FFFFFF"
 BLACK = "#111111"
 
@@ -118,10 +118,10 @@ write("fishtech-mark-white.svg", 100, 100, mark_group(WHITE, GREEN), "FishTech")
 write("fishtech-mark-black.svg", 100, 100, mark_group(BLACK, BLACK), "FishTech")
 
 # App and profile icon: white and green mark on a teal tile.
-tile = (f'<rect width="512" height="512" rx="112" fill="{TEAL}"/>'
+tile = (f'<rect width="512" height="512" rx="112" fill="{DEEP}"/>'
         + mark_group(WHITE, GREEN, 106, 106, 300))
 write("fishtech-icon.svg", 512, 512, tile, "FishTech")
-circle = (f'<circle cx="256" cy="256" r="256" fill="{TEAL}"/>' + mark_group(WHITE, GREEN, 126, 126, 260))
+circle = (f'<circle cx="256" cy="256" r="256" fill="{DEEP}"/>' + mark_group(WHITE, GREEN, 126, 126, 260))
 write("fishtech-profile.svg", 512, 512, circle, "FishTech")
 
 print("wrote", sorted(p.name for p in OUT.glob("*.svg")))

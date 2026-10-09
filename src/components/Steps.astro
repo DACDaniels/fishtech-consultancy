@@ -31,7 +31,7 @@ import Price from './Price.astro';
   .rail { position: absolute; left: 1.05rem; top: 1.6rem; bottom: 1.6rem; width: 2px; background: var(--line); }
   .bar { position: absolute; inset: 0; background: var(--teal); transform-origin: top; }
   .steps li::before { transition: color 300ms, transform 300ms var(--ease-out); position: relative; z-index: 1; background: var(--mist); }
-  .steps li.is-active::before { color: var(--gold); transform: scale(1.12); }
+  .steps li.is-active::before { color: var(--teal); transform: scale(1.12); }
   .steps li h3 { transition: color 300ms; }
   .steps li.is-active h3 { color: var(--teal); }
   .steps li { counter-increment: step; display: grid; grid-template-columns: 3.5rem 1fr; gap: 0.25rem 1rem; padding-block: 1.4rem; border-top: 1px solid var(--line); }
