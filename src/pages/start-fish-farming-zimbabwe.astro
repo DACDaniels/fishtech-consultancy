@@ -9,7 +9,7 @@ import Price from '../components/Price.astro';
 import { Picture } from 'astro:assets';
 import fingerlings from '../assets/photos/fingerlings-under-net-2.jpg';
 import crew from '../assets/photos/ponds-crew-lining.jpg';
-import { feed, plan } from '../lib/site';
+import { feed, plan, SITE } from '../lib/site';
 import { pondSizes, stockingPlan } from '../lib/pricing';
 
 const sizes = pondSizes(feed).map((s) => ({ ...s, fish: stockingPlan(feed, plan, s.area).fingerlings }));
@@ -17,7 +17,7 @@ const article = {
   '@context': 'https://schema.org', '@type': 'Article',
   headline: 'How to start fish farming in Zimbabwe',
   author: { '@type': 'Organization', name: 'FishTech' },
-  publisher: { '@type': 'Organization', name: 'FishTech', logo: { '@type': 'ImageObject', url: 'https://fishtech.co.zw/brand/icon-512.png' } },
+  publisher: { '@type': 'Organization', name: 'FishTech', logo: { '@type': 'ImageObject', url: `${SITE}/brand/icon-512.png` } },
   datePublished: '2026-10-04', inLanguage: 'en',
 };
 ---

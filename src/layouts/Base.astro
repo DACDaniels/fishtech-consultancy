@@ -5,15 +5,30 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import Intro from '../components/Intro.astro';
-import { feed, wa, HELLO, SITE } from '../lib/site';
+import { feed, wa, HELLO, SITE, CHANNEL } from '../lib/site';
 
 interface Props { title: string; description: string; image?: string; noFloat?: boolean; jsonLd?: Record<string, unknown>[]; headerTone?: 'light' | 'dark' }
 const { title, description, image = '/og/fishtech.jpg', noFloat = false, jsonLd = [], headerTone = 'light' } = Astro.props;
 const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'), SITE).href;
+// Who the business is, for search engines. The founder is named here (and visibly in the
+// footer credit) so Google links FishTech and Daniel; there is no founder section on the
+// page by decision (blueacre-ops docs/DECISIONS.md 2026-10-09, "Search").
+const founder = {
+  '@type': 'Person',
+  '@id': `${SITE}/#daniel-chadambuka`,
+  name: 'Daniel Anesu Chadambuka',
+  alternateName: 'Daniel Chadambuka',
+  sameAs: ['https://github.com/DACDaniels'],
+};
 const business = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
+  '@id': `${SITE}/#fishtech`,
   name: 'FishTech',
+  alternateName: 'FishTech Zimbabwe',
+  founder,
+  sameAs: [CHANNEL],
+  knowsAbout: ['Fish farming', 'Tilapia farming', 'Fish pond construction', 'Pond liners', 'Tilapia fingerlings', 'Fish feed'],
   description: 'Fish pond construction with HDPE liner, bird and predator nets, tilapia fingerlings and fish feed across Zimbabwe.',
   url: SITE,
   telephone: `+${feed.whatsapp}`,
